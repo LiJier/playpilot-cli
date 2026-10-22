@@ -15,6 +15,10 @@
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
 </p>
 
+<p align="center">
+  <strong>简体中文</strong> | <a href="README_EN.md">English</a>
+</p>
+
 ---
 
 > ### 🌐 在线免安装体验 (Web App)
