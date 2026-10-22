@@ -1,0 +1,1360 @@
+[
+  {
+    "id": "admob",
+    "name": "Google AdMob / Mobile Ads SDK",
+    "provider": "Google LLC",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/google/android/gms/ads/AdView",
+      "com.google.android.gms.ads.AdView",
+      "com/google/android/gms/ads/MobileAds",
+      "com.google.android.gms.ads.MobileAds",
+      "com/google/android/gms/ads/AdRequest",
+      "com.google.android.gms.ads.AdRequest",
+      "com/google/android/gms/ads/interstitial",
+      "com/google/android/gms/ads/rewarded",
+      "com/google/android/gms/ads/nativead"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions",
+        "Diagnostics"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics",
+        "Fraud prevention, security, and compliance"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-google-android-gms-play-services-ads"
+  },
+  {
+    "id": "google_ads_identifier",
+    "name": "Google Play Advertising ID Client (GAID 读取接口)",
+    "provider": "Google LLC",
+    "category": "Device Identification",
+    "signature_prefixes": [
+      "com/google/android/gms/ads/identifier",
+      "com.google.android.gms.ads.identifier"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "Analytics",
+        "Fraud prevention, security, and compliance"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://developers.google.com/android/reference/com/google/android/gms/ads/identifier/AdvertisingIdClient"
+  },
+  {
+    "id": "amap_sdk",
+    "name": "高德地图 / 定位 SDK (AMap SDK)",
+    "provider": "AutoNavi / Alibaba",
+    "category": "Location & Maps",
+    "signature_prefixes": [
+      "com/amap/api",
+      "com.amap.api",
+      "com/loc"
+    ],
+    "required_permissions": [
+      "android.permission.ACCESS_COARSE_LOCATION",
+      "android.permission.ACCESS_FINE_LOCATION"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Approximate location",
+        "Precise location",
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality",
+        "Fraud prevention, security, and compliance"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://lbs.amap.com/compliance"
+  },
+  {
+    "id": "firebase_analytics",
+    "name": "Google Analytics for Firebase",
+    "provider": "Google LLC",
+    "category": "Analytics",
+    "signature_prefixes": [
+      "com/google/firebase/analytics",
+      "com.google.firebase.analytics"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions",
+        "In-app search history"
+      ],
+      "purposes": [
+        "Analytics",
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-google-firebase-firebase-analytics"
+  },
+  {
+    "id": "firebase_crashlytics",
+    "name": "Firebase Crashlytics",
+    "provider": "Google LLC",
+    "category": "Data Management & Diagnostics",
+    "signature_prefixes": [
+      "com/google/firebase/crashlytics",
+      "com.google.firebase.crashlytics"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Crash logs",
+        "Diagnostics",
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "Analytics",
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-google-firebase-firebase-crashlytics"
+  },
+  {
+    "id": "firebase_perf",
+    "name": "Firebase Performance Monitoring",
+    "provider": "Google LLC",
+    "category": "Data Management & Diagnostics",
+    "signature_prefixes": [
+      "com/google/firebase/perf",
+      "com.google.firebase.perf"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Diagnostics",
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "Analytics",
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-google-firebase-firebase-perf"
+  },
+  {
+    "id": "firebase_messaging",
+    "name": "Firebase Cloud Messaging (FCM)",
+    "provider": "Google LLC",
+    "category": "Marketing and Engagement",
+    "signature_prefixes": [
+      "com/google/firebase/messaging",
+      "com.google.firebase.messaging"
+    ],
+    "required_permissions": [
+      "android.permission.POST_NOTIFICATIONS"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions"
+      ],
+      "purposes": [
+        "App functionality",
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-google-firebase-firebase-messaging"
+  },
+  {
+    "id": "facebook_ads",
+    "name": "Meta Audience Network (Facebook Ads)",
+    "provider": "Meta",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/facebook/ads",
+      "com.facebook.ads"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions",
+        "Purchase history"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-facebook-android-audience-network-sdk"
+  },
+  {
+    "id": "facebook_core",
+    "name": "Meta / Facebook Core & App Events SDK",
+    "provider": "Meta",
+    "category": "Analytics & Attribution",
+    "signature_prefixes": [
+      "com/facebook/appevents",
+      "com.facebook.appevents",
+      "com/facebook/core",
+      "com.facebook.core"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "Device or other IDs",
+        "App interactions",
+        "Purchase history"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-facebook-android-facebook-core"
+  },
+  {
+    "id": "appsflyer",
+    "name": "AppsFlyer Attribution & Marketing SDK",
+    "provider": "AppsFlyer",
+    "category": "Analytics & Attribution",
+    "signature_prefixes": [
+      "com/appsflyer",
+      "com.appsflyer"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions",
+        "Purchase history"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics",
+        "Fraud prevention, security, and compliance"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-appsflyer-af-android-sdk"
+  },
+  {
+    "id": "adjust",
+    "name": "Adjust Attribution & Analytics",
+    "provider": "Adjust GmbH",
+    "category": "Analytics & Attribution",
+    "signature_prefixes": [
+      "com/adjust/sdk",
+      "com.adjust.sdk"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions",
+        "Purchase history"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics",
+        "Fraud prevention, security, and compliance"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-adjust-sdk-adjust-android"
+  },
+  {
+    "id": "singular",
+    "name": "Singular Marketing Analytics",
+    "provider": "Singular Labs",
+    "category": "Analytics & Attribution",
+    "signature_prefixes": [
+      "net/singular/sdk",
+      "net.singular.sdk"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions",
+        "Purchase history"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/net-singular-sdk-singular"
+  },
+  {
+    "id": "kochava",
+    "name": "Kochava Measurement Engine",
+    "provider": "Kochava Inc.",
+    "category": "Analytics & Attribution",
+    "signature_prefixes": [
+      "com/kochava/tracker",
+      "com.kochava.tracker",
+      "com/kochava/core",
+      "com.kochava.core"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Fraud prevention, security, and compliance"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-kochava-base-tracker"
+  },
+  {
+    "id": "unity_ads",
+    "name": "Unity Ads / Unity Monetization",
+    "provider": "Unity Technologies",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/unity3d/services/ads",
+      "com.unity3d.services.ads",
+      "com/unity3d/ads",
+      "com.unity3d.ads"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions",
+        "Diagnostics"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-unity3d-ads-unity-ads"
+  },
+  {
+    "id": "applovin",
+    "name": "AppLovin / MAX Mediation",
+    "provider": "AppLovin Corp.",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/applovin",
+      "com.applovin"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-applovin-applovin-sdk"
+  },
+  {
+    "id": "ironsource",
+    "name": "ironSource / LevelPlay Mediation",
+    "provider": "ironSource / Unity",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/ironsource/mediationsdk",
+      "com.ironsource.mediationsdk",
+      "com/unity3d/mediation",
+      "com.unity3d.mediation"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-ironsource-sdk-mediationsdk"
+  },
+  {
+    "id": "mintegral",
+    "name": "Mintegral SDK",
+    "provider": "Mobvista",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/mbridge/msdk",
+      "com.mbridge.msdk",
+      "com/mintegral/msdk",
+      "com.mintegral.msdk"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-mbridge-msdk-support-native"
+  },
+  {
+    "id": "pangle",
+    "name": "Pangle (TikTok Audience Network)",
+    "provider": "ByteDance",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/bytedance/sdk/openadsdk",
+      "com.bytedance.sdk.openadsdk",
+      "com/bytedance/pangle",
+      "com.bytedance.pangle"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Fraud prevention, security, and compliance"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-pangle-global-ads-sdk"
+  },
+  {
+    "id": "inmobi",
+    "name": "InMobi Monetization SDK",
+    "provider": "InMobi",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/inmobi/ads",
+      "com.inmobi.ads",
+      "com/inmobi/sdk",
+      "com.inmobi.sdk"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-inmobi-monetization-ads"
+  },
+  {
+    "id": "liftoff_vungle",
+    "name": "Liftoff / Vungle Ads SDK",
+    "provider": "Liftoff Mobile",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/vungle/ads",
+      "com.vungle.ads",
+      "com/vungle/warren",
+      "com.vungle.warren"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-vungle-vungle-ads"
+  },
+  {
+    "id": "chartboost",
+    "name": "Chartboost Mediation & Ads",
+    "provider": "Chartboost",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/chartboost/sdk",
+      "com.chartboost.sdk"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-chartboost-chartboost-sdk"
+  },
+  {
+    "id": "sentry",
+    "name": "Sentry Android Error Reporting",
+    "provider": "Functional Software Inc. (Sentry)",
+    "category": "Data Management & Diagnostics",
+    "signature_prefixes": [
+      "io/sentry",
+      "io.sentry"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Crash logs",
+        "Diagnostics",
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality",
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/io-sentry-sentry-android"
+  },
+  {
+    "id": "bugsnag",
+    "name": "Bugsnag Stability Monitoring",
+    "provider": "SmartBear (Bugsnag)",
+    "category": "Data Management & Diagnostics",
+    "signature_prefixes": [
+      "com/bugsnag/android",
+      "com.bugsnag.android"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Crash logs",
+        "Diagnostics"
+      ],
+      "purposes": [
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-bugsnag-bugsnag-android"
+  },
+  {
+    "id": "datadog",
+    "name": "Datadog Real User Monitoring (RUM)",
+    "provider": "Datadog",
+    "category": "Data Management & Diagnostics",
+    "signature_prefixes": [
+      "com/datadog/android",
+      "com.datadog.android"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Crash logs",
+        "Diagnostics",
+        "App interactions"
+      ],
+      "purposes": [
+        "App functionality",
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-datadoghq-dd-sdk-android"
+  },
+  {
+    "id": "onesignal",
+    "name": "OneSignal Push Notifications",
+    "provider": "OneSignal",
+    "category": "Marketing and Engagement",
+    "signature_prefixes": [
+      "com/onesignal",
+      "com.onesignal"
+    ],
+    "required_permissions": [
+      "android.permission.POST_NOTIFICATIONS"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "App functionality",
+        "Analytics",
+        "Personalization"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-onesignal-OneSignal"
+  },
+  {
+    "id": "braze",
+    "name": "Braze Customer Engagement",
+    "provider": "Braze Inc.",
+    "category": "Marketing and Engagement",
+    "signature_prefixes": [
+      "com/braze",
+      "com.braze",
+      "com/appboy",
+      "com.appboy"
+    ],
+    "required_permissions": [
+      "android.permission.POST_NOTIFICATIONS"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "Device or other IDs",
+        "App interactions",
+        "Purchase history"
+      ],
+      "purposes": [
+        "Developer communications",
+        "Personalization",
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-braze-android-sdk-ui"
+  },
+  {
+    "id": "clevertap",
+    "name": "CleverTap Engagement",
+    "provider": "WizRocket Inc. (CleverTap)",
+    "category": "Marketing and Engagement",
+    "signature_prefixes": [
+      "com/clevertap/android/sdk",
+      "com.clevertap.android.sdk"
+    ],
+    "required_permissions": [
+      "android.permission.POST_NOTIFICATIONS"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions"
+      ],
+      "purposes": [
+        "Developer communications",
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-clevertap-android-clevertap-android-sdk"
+  },
+  {
+    "id": "mixpanel",
+    "name": "Mixpanel Product Analytics",
+    "provider": "Mixpanel",
+    "category": "Analytics",
+    "signature_prefixes": [
+      "com/mixpanel/android",
+      "com.mixpanel.android"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "Device or other IDs",
+        "App interactions"
+      ],
+      "purposes": [
+        "Analytics",
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-mixpanel-android-mixpanel-android"
+  },
+  {
+    "id": "amplitude",
+    "name": "Amplitude Digital Analytics",
+    "provider": "Amplitude Inc.",
+    "category": "Analytics",
+    "signature_prefixes": [
+      "com/amplitude/api",
+      "com.amplitude.api",
+      "com/amplitude/android",
+      "com.amplitude.android"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "Device or other IDs",
+        "App interactions"
+      ],
+      "purposes": [
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-amplitude-android-sdk"
+  },
+  {
+    "id": "revenuecat",
+    "name": "RevenueCat In-App Purchases & Subscriptions",
+    "provider": "RevenueCat Inc.",
+    "category": "Payments & Subscriptions",
+    "signature_prefixes": [
+      "com/revenuecat/purchases",
+      "com.revenuecat.purchases"
+    ],
+    "required_permissions": [
+      "com.android.vending.BILLING"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "Purchase history",
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality",
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-revenuecat-purchases-purchases"
+  },
+  {
+    "id": "google_play_billing",
+    "name": "Google Play Billing Library",
+    "provider": "Google LLC",
+    "category": "Payments & Subscriptions",
+    "signature_prefixes": [
+      "com/android/billingclient",
+      "com.android.billingclient"
+    ],
+    "required_permissions": [
+      "com.android.vending.BILLING"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Purchase history",
+        "User payment info"
+      ],
+      "purposes": [
+        "App functionality",
+        "Fraud prevention, security, and compliance"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-android-billingclient-billing"
+  },
+  {
+    "id": "stripe",
+    "name": "Stripe Android Payment SDK",
+    "provider": "Stripe Inc.",
+    "category": "Payments & Subscriptions",
+    "signature_prefixes": [
+      "com/stripe/android",
+      "com.stripe.android"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User payment info",
+        "Purchase history",
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality",
+        "Fraud prevention, security, and compliance"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-stripe-stripe-android"
+  },
+  {
+    "id": "google_auth",
+    "name": "Google Sign-In & Credential Manager",
+    "provider": "Google LLC",
+    "category": "Social & User Authentication",
+    "signature_prefixes": [
+      "com/google/android/gms/auth",
+      "com.google.android.gms.auth",
+      "androidx/credentials",
+      "androidx.credentials"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Name",
+        "Email address",
+        "User IDs"
+      ],
+      "purposes": [
+        "Account management",
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-google-android-gms-play-services-auth"
+  },
+  {
+    "id": "facebook_login",
+    "name": "Facebook Login SDK",
+    "provider": "Meta",
+    "category": "Social & User Authentication",
+    "signature_prefixes": [
+      "com/facebook/login",
+      "com.facebook.login"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Name",
+        "Email address",
+        "User IDs"
+      ],
+      "purposes": [
+        "Account management",
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://play.google.com/sdks/details/com-facebook-android-facebook-login"
+  },
+  {
+    "id": "openai_api",
+    "name": "OpenAI / LLM API Integration",
+    "provider": "OpenAI",
+    "category": "AI Services",
+    "signature_prefixes": [
+      "com.openai",
+      "com/openai",
+      "api.openai.com"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Other user-generated content",
+        "Voice or sound recordings"
+      ],
+      "purposes": [
+        "App functionality"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://support.google.com/googleplay/android-developer/answer/14346542"
+  },
+  {
+    "id": "gemini_ai",
+    "name": "Google Generative AI / Gemini SDK",
+    "provider": "Google LLC",
+    "category": "AI Services",
+    "signature_prefixes": [
+      "com/google/ai/client/generativeai",
+      "com.google.ai.client.generativeai",
+      "generativelanguage.googleapis.com"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Other user-generated content"
+      ],
+      "purposes": [
+        "App functionality"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://support.google.com/googleplay/android-developer/answer/14346542"
+  },
+  {
+    "id": "supabase_auth",
+    "name": "Supabase Android SDK",
+    "provider": "Supabase Inc.",
+    "category": "Authentication and Database",
+    "signature_prefixes": [
+      "io/supabase",
+      "io.supabase"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "Email address"
+      ],
+      "purposes": [
+        "App functionality",
+        "Account management"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://supabase.com/docs/guides/getting-started/quickstarts/kotlin"
+  },
+  {
+    "id": "auth0",
+    "name": "Auth0 Android SDK",
+    "provider": "Okta / Auth0",
+    "category": "Authentication and Security",
+    "signature_prefixes": [
+      "com/auth0/android",
+      "com.auth0.android"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "Email address"
+      ],
+      "purposes": [
+        "App functionality",
+        "Account management",
+        "Fraud prevention, security, and compliance"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://auth0.com/docs/quickstart/native/android"
+  },
+  {
+    "id": "aws_cognito",
+    "name": "AWS Amplify / Cognito SDK",
+    "provider": "Amazon Web Services",
+    "category": "Authentication and Cloud",
+    "signature_prefixes": [
+      "com/amplifyframework",
+      "com.amplifyframework",
+      "com/amazonaws/mobileconnectors/cognito",
+      "com.amazonaws.mobileconnectors.cognito"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "Email address",
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality",
+        "Account management"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://docs.amplify.aws/gen1/android/"
+  },
+  {
+    "id": "branch_metrics",
+    "name": "Branch Deep Linking & Attribution SDK",
+    "provider": "Branch Metrics",
+    "category": "Advertising and Attribution",
+    "signature_prefixes": [
+      "io/branch/referral",
+      "io.branch.referral"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions",
+        "Approximate location"
+      ],
+      "purposes": [
+        "Analytics",
+        "Advertising or marketing"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://help.branch.io/developers-hub/docs/android-sdk-overview"
+  },
+  {
+    "id": "tenjin",
+    "name": "Tenjin Mobile Attribution SDK",
+    "provider": "Tenjin Inc.",
+    "category": "Advertising and Attribution",
+    "signature_prefixes": [
+      "com/tenjin/android",
+      "com.tenjin.android"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions",
+        "Purchase history"
+      ],
+      "purposes": [
+        "Analytics",
+        "Advertising or marketing"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://docs.tenjin.com/en/sdk/android/android-sdk.html"
+  },
+  {
+    "id": "tiktok_business",
+    "name": "TikTok Business SDK",
+    "provider": "ByteDance Ltd.",
+    "category": "Advertising and Attribution",
+    "signature_prefixes": [
+      "com/tiktok/business",
+      "com.tiktok.business",
+      "com/tiktok/android/business"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions",
+        "Purchase history"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://business-api.tiktok.com/portal/docs?id=1740925769213953"
+  },
+  {
+    "id": "snapchat_kit",
+    "name": "Snapchat Kit (Creative & Login)",
+    "provider": "Snap Inc.",
+    "category": "Social and Sharing",
+    "signature_prefixes": [
+      "com/snapchat/kit",
+      "com.snapchat.kit"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "App interactions"
+      ],
+      "purposes": [
+        "App functionality",
+        "Account management"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://docs.snap.com/snap-kit/login-kit/Tutorials/android"
+  },
+  {
+    "id": "posthog",
+    "name": "PostHog Android SDK",
+    "provider": "PostHog Inc.",
+    "category": "Product Analytics",
+    "signature_prefixes": [
+      "com/posthog/android",
+      "com.posthog.android"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions",
+        "Diagnostics"
+      ],
+      "purposes": [
+        "Analytics",
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://posthog.com/docs/libraries/android"
+  },
+  {
+    "id": "segment_analytics",
+    "name": "Twilio Segment Analytics",
+    "provider": "Twilio Inc.",
+    "category": "Customer Data Platform",
+    "signature_prefixes": [
+      "com/segment/analytics",
+      "com.segment.analytics"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions",
+        "Diagnostics"
+      ],
+      "purposes": [
+        "Analytics",
+        "Personalization"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://segment.com/docs/connections/sources/catalog/libraries/mobile/kotlin-android/"
+  },
+  {
+    "id": "tradplus",
+    "name": "TradPlus Ad Mediation SDK",
+    "provider": "TradPlus",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/tradplus/ads",
+      "com.tradplus.ads"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://docs.tradplusad.com/"
+  },
+  {
+    "id": "topon",
+    "name": "TopOn Ad Mediation SDK (AnyThink)",
+    "provider": "TopOn / AnyThink",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/anythink/core",
+      "com.anythink.core"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://docs.toponad.com/"
+  },
+  {
+    "id": "adcolony",
+    "name": "AdColony SDK",
+    "provider": "Digital Turbine",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/adcolony/sdk",
+      "com.adcolony.sdk"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://github.com/AdColony/AdColony-Android-SDK"
+  },
+  {
+    "id": "tencent_bugly",
+    "name": "Tencent Bugly Crash Reporting",
+    "provider": "Tencent Inc.",
+    "category": "Crash Reporting & Diagnostics",
+    "signature_prefixes": [
+      "com/tencent/bugly",
+      "com.tencent.bugly"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Crash logs",
+        "Diagnostics",
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "Analytics",
+        "Fraud prevention, security, and compliance"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://bugly.qq.com/docs/"
+  },
+  {
+    "id": "wechat_sdk",
+    "name": "WeChat Open SDK (微信登录/分享)",
+    "provider": "Tencent Inc.",
+    "category": "Social and Sharing",
+    "signature_prefixes": [
+      "com/tencent/mm/opensdk",
+      "com.tencent.mm.opensdk"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "App interactions"
+      ],
+      "purposes": [
+        "App functionality",
+        "Account management"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Access_Guide/Android.html"
+  },
+  {
+    "id": "alipay_sdk",
+    "name": "Alipay Mobile SDK (支付宝支付)",
+    "provider": "Ant Group",
+    "category": "Payment",
+    "signature_prefixes": [
+      "com/alipay/sdk",
+      "com.alipay.sdk"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User payment info",
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality",
+        "Fraud prevention, security, and compliance"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://opendocs.alipay.com/open/204/105051"
+  }
+]

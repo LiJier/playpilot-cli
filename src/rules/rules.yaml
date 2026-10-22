@@ -1,0 +1,502 @@
+rules:
+  - id: "RULE_TARGET_SDK"
+    severity: "FATAL"
+    min_target_sdk: 34
+    doc_url: "https://developer.android.com/google/play/requirements/target-sdk"
+    category:
+      zh: "系统硬性要求 (System Requirement)"
+      en: "System Requirement"
+    title:
+      zh: "Target SDK 等级合规性检查"
+      en: "Target SDK Version Compliance Check"
+    description:
+      zh: "Google Play 强制要求提交的新应用必须以 Android 14 (API 34) 或更高版本为目标平台。未达标应用提交将直接被 Play Console 拦截。"
+      en: "Google Play mandates that all new app submissions target Android 14 (API level 34) or higher. Submissions below this threshold will be blocked by Play Console."
+    remediation_summary:
+      zh: "修改 build.gradle 中的 targetSdk 与 compileSdk 至 34 或更高版本。"
+      en: "Update targetSdk and compileSdk in your build.gradle to 34 or higher."
+    code_diff:
+      zh: |
+        --- a/app/build.gradle
+        +++ b/app/build.gradle
+         android {
+        -    compileSdk 33
+        +    compileSdk 34
+             defaultConfig {
+        -        targetSdk 33
+        +        targetSdk 34
+             }
+         }
+      en: |
+        --- a/app/build.gradle
+        +++ b/app/build.gradle
+         android {
+        -    compileSdk 33
+        +    compileSdk 34
+             defaultConfig {
+        -        targetSdk 33
+        +        targetSdk 34
+             }
+         }
+    prompt_template:
+      zh: |
+        我在提交 Google Play 审核时因 targetSdkVersion 不合规被拒。
+        请检查我的 Android 项目：
+        1. 在 app/build.gradle 或 build.gradle.kts 中，将 targetSdk 和 compileSdk 修改为 34（或 35）。
+        2. 检查是否有因升级 API 34 而被废弃（Deprecated）的方法调用，并给出平滑替换代码。
+        3. 确保包含必要的 Java 8+ desugaring 配置（若使用了新 API 特性）。
+      en: |
+        My Android application submission was rejected by Google Play due to non-compliant targetSdkVersion.
+        Please inspect my project files:
+        1. In app/build.gradle (or build.gradle.kts), update targetSdk and compileSdk to 34 (or 35).
+        2. Resolve any deprecated API usages introduced by targeting Android 14 (API 34).
+        3. Ensure Java 8+ core library desugaring is enabled if modern Java APIs are used.
+
+  - id: "RULE_FOREGROUND_SERVICE"
+    severity: "FATAL"
+    doc_url: "https://developer.android.com/about/versions/14/changes/fgs-types-required"
+    category:
+      zh: "前台服务合规 (Foreground Service)"
+      en: "Foreground Service Policy"
+    title:
+      zh: "Android 14+ 前台服务必须声明明确类型"
+      en: "Android 14+ Foreground Services Must Declare Explicit Types"
+    description:
+      zh: "从 Android 14 (API 34) 开始，应用使用 FOREGROUND_SERVICE 权限时，必须在 AndroidManifest.xml 的每一个 <service> 标签中显式声明 android:foregroundServiceType 属性，否则在 Android 14 设备上启动前台服务将直接崩溃（SecurityException），并导致 Play 审核打回。"
+      en: "Starting with Android 14 (API level 34), apps using FOREGROUND_SERVICE must specify a valid android:foregroundServiceType for every <service> element. Omitting this attribute triggers a SecurityException on Android 14 devices and immediate rejection by Google Play."
+    remediation_summary:
+      zh: "在 AndroidManifest.xml 的 <service> 节点中补充 android:foregroundServiceType，并申请对应的子权限。"
+      en: "Add android:foregroundServiceType attribute to all <service> declarations in AndroidManifest.xml and declare required child permissions."
+    code_diff:
+      zh: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+        +    <!-- Android 14+ 必须按用途声明对应具体前台服务权限 (如 dataSync) -->
+        +    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+        +
+             <application ...>
+                 <service
+                     android:name=".services.DownloadService"
+        -            android:exported="false" />
+        +            android:exported="false"
+        +            android:foregroundServiceType="dataSync" />
+      en: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+        +    <!-- Declare type-specific foreground service permission on Android 14+ -->
+        +    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+        +
+             <application ...>
+                 <service
+                     android:name=".services.DownloadService"
+        -            android:exported="false" />
+        +            android:exported="false"
+        +            android:foregroundServiceType="dataSync" />
+    prompt_template:
+      zh: |
+        我的 App 在 Google Play 审核被拦截，原因是在 targetSdk 34 下声明了前台服务但缺少 foregroundServiceType。
+        请检查我的 AndroidManifest.xml：
+        1. 找出所有带有 android.permission.FOREGROUND_SERVICE 的 <service> 节点。
+        2. 根据服务实际用途（如文件下载用 dataSync，定位用 location，音频播放用 mediaPlayback），为每个 <service> 添加 android:foregroundServiceType="xxx"。
+        3. 在 <manifest> 根节点补充对应具体的细分权限声明（如 FOREGROUND_SERVICE_DATA_SYNC）。
+      en: |
+        My app submission was rejected by Google Play because foreground services were declared without foregroundServiceType on targetSdk 34.
+        Please inspect AndroidManifest.xml:
+        1. Locate all <service> nodes associated with android.permission.FOREGROUND_SERVICE.
+        2. Add the appropriate android:foregroundServiceType (e.g. dataSync, location, mediaPlayback, specialUse) based on each service's actual functionality.
+        3. Declare the corresponding specific foreground service permissions under <manifest> (e.g., FOREGROUND_SERVICE_DATA_SYNC).
+
+  - id: "RULE_AD_ID_DECLARATION"
+    severity: "HIGH"
+    doc_url: "https://support.google.com/googleplay/android-developer/answer/6048248"
+    category:
+      zh: "广告政策 (Advertising Policy)"
+      en: "Advertising Policy"
+    title:
+      zh: "广告 ID (AD_ID) 权限与声明缺失"
+      en: "Missing Advertising ID (AD_ID) Permission or Declaration"
+    description:
+      zh: "检测到应用中引入了广告营销类 SDK（如 AdMob, Facebook, AppsFlyer 等），但在 Manifest 中未发现 com.google.android.gms.permission.AD_ID 权限声明，或者未在 Play Console 勾选广告声明。"
+      en: "Advertising/monetization SDKs were detected in the package, but com.google.android.gms.permission.AD_ID is missing from AndroidManifest.xml, or the advertising declaration is not completed in Play Console."
+    remediation_summary:
+      zh: "在 AndroidManifest.xml 中添加 AD_ID 权限，并在 Play Console 声明广告用途。"
+      en: "Add com.google.android.gms.permission.AD_ID to AndroidManifest.xml and declare ads usage in Play Console."
+    code_diff:
+      zh: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+             <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+        +        <!-- 引入商业广告变现 SDK 时在 Android 13+ 必须显式声明 AD_ID -->
+        +        <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+      en: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+             <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+        +        <!-- Required for apps targeting Android 13 (API 33)+ using ad networks -->
+        +        <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+    prompt_template:
+      zh: |
+        我的应用引入了广告/归因 SDK，但在 Play 审核中提示广告 ID 声明不匹配。
+        请帮我在 AndroidManifest.xml 的 <manifest> 节点中添加广告 ID 权限声明：
+        <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+        并检查混淆规则 proguard-rules.pro 是否需要保留广告 SDK 相关类。
+      en: |
+        My app integrates advertising/attribution SDKs but lacks the Advertising ID permission required for Android 13+.
+        Please add the AD_ID permission inside the <manifest> root of AndroidManifest.xml:
+        <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+        Also verify that Proguard/R8 rules in proguard-rules.pro keep necessary ad SDK classes.
+
+  - id: "RULE_RESTRICTED_PERMISSIONS"
+    severity: "HIGH"
+    doc_url: "https://support.google.com/googleplay/android-developer/answer/9214102"
+    category:
+      zh: "权限政策 (Permissions Policy)"
+      en: "Permissions Policy"
+    title:
+      zh: "高危受限敏感权限审核风险"
+      en: "Restricted & High-Risk Permissions Audit"
+    description:
+      zh: "应用申请了 Google Play 极高风险权限（如短信、通讯录、后台位置、安装未知来源应用等）。此类权限上架时必须提交详细的《权限声明表单》与演示视频，极易导致下架或拒审。"
+      en: "The application declares high-risk restricted permissions (e.g. SMS, Contacts, Background Location, Query All Packages, All Files Access). Google Play requires a dedicated declaration form and video demonstration, with a very high rejection rate."
+    remediation_summary:
+      zh: "评估是否能使用系统原生选择器（如 Photo Picker）或隐式 Intent 替代直接申请敏感权限。"
+      en: "Evaluate whether sensitive permissions can be replaced with privacy-friendly alternatives like system Photo Picker or implicit Intents."
+    code_diff:
+      zh: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+        -    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+        -    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        +    <!-- 建议废弃传统外部存储权限，改用系统免权限 Photo Picker 选择相册 -->
+      en: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+        -    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+        -    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        +    <!-- Refactor to Android Photo Picker (ActivityResultContracts.PickVisualMedia) -->
+    prompt_template:
+      zh: |
+        Google Play 对以下受限权限审查极其严苛：{permissions}。
+        请评估代码中对这些权限的实际调用逻辑：
+        1. 如果是读取相册/文件，请帮我重构为 Android 13+ 推荐的系统 Photo Picker（无需申请存储权限）。
+        2. 如果是拨打电话或发短信，请改为启动系统拨号/短信 Intent。
+        3. 如果必须保留该权限，请生成一段供 Google Play 审核人员查阅的《权限使用核心功能合规说明及申诉文案》。
+      en: |
+        Google Play enforces strict scrutiny on the following restricted permissions: {permissions}.
+        Please review the code calling these permissions:
+        1. For photo/file selection, refactor to Android 13+ Photo Picker API (which requires no storage permissions).
+        2. For phone dialing or SMS, replace with system implicit intents (Intent.ACTION_DIAL, Intent.ACTION_SENDTO).
+        3. If retaining these permissions is critical, draft a formal justification text explaining core user-facing functionality for Google Play review.
+
+  - id: "RULE_POST_NOTIFICATIONS"
+    severity: "MEDIUM"
+    doc_url: "https://developer.android.com/develop/ui/views/notifications/notification-permission"
+    category:
+      zh: "通知政策 (Notification Policy)"
+      en: "Notification Policy"
+    title:
+      zh: "Android 13+ 推送通知权限动态申请合规"
+      en: "Android 13+ Notification Runtime Permission Compliance"
+    description:
+      zh: "在 targetSdkVersion >= 33 时，若应用需发送通知，必须声明 android.permission.POST_NOTIFICATIONS，并在运行时向用户动态申请。"
+      en: "When targeting Android 13 (API level 33) or higher, apps that post notifications must declare android.permission.POST_NOTIFICATIONS and request user permission at runtime."
+    remediation_summary:
+      zh: "添加 POST_NOTIFICATIONS 并在首次需要时友好请求授权。"
+      en: "Add android.permission.POST_NOTIFICATIONS and implement a polite runtime permission request flow."
+    code_diff:
+      zh: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+        +    <!-- targetSdk 33+ 发送前台/本地通知必须声明该权限并在运行时申请 -->
+        +    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+      en: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+        +    <!-- Required to post notifications when targeting Android 13+ (API 33) -->
+        +    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    prompt_template:
+      zh: |
+        应用需要发送本地通知或推送，在 Android 13+ 必须动态申请 POST_NOTIFICATIONS。
+        请帮我：
+        1. 在 AndroidManifest.xml 中声明 <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>。
+        2. 编写一段在 Activity/Compose 中优雅检查并请求该运行时权限的代码，附带权限解释弹窗（Rationale Dialog）。
+      en: |
+        The app posts notifications and must request POST_NOTIFICATIONS runtime permission on Android 13+.
+        Please help:
+        1. Declare <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/> in AndroidManifest.xml.
+        2. Write standard Activity/Compose code to check and request this runtime permission gracefully, including a rationale dialog.
+
+  - id: "RULE_AI_CONTENT_POLICY"
+    severity: "MEDIUM"
+    doc_url: "https://support.google.com/googleplay/android-developer/answer/14346542"
+    category:
+      zh: "AI 生成内容政策 (GenAI Policy)"
+      en: "GenAI Content Policy"
+    title:
+      zh: "AI 生成内容 (GenAI) 披露与合规"
+      en: "Generative AI Content Disclosure & Compliance"
+    description:
+      zh: "包内检测到调用了大语言模型或 AI 服务 API（如 OpenAI / Gemini 等）。根据 Google Play 最新政策，包含生成式 AI 功能的应用必须在商店后台完成 GenAI 表单申报，并具备用户举报违规内容机制。"
+      en: "The application calls Generative AI APIs (e.g. OpenAI, Gemini). Google Play policy requires apps featuring GenAI to submit the GenAI questionnaire in Play Console and provide an in-app user reporting mechanism for offensive AI content."
+    remediation_summary:
+      zh: "在 Google Play 详情页声明包含生成式 AI，并确保 App 具备有害内容过滤及一键举报机制。"
+      en: "Disclose GenAI features in Play Console and ensure an in-app reporting button is available for offensive AI content."
+    code_diff:
+      zh: |
+        --- a/app/src/main/res/values/strings.xml
+        +++ b/app/src/main/res/values/strings.xml
+        +    <string name="report_ai_content">举报不当 AI 内容</string>
+        +    <string name="ai_report_success">感谢您的反馈，该生成内容已提交人工复核。</string>
+      en: |
+        --- a/app/src/main/res/values/strings.xml
+        +++ b/app/src/main/res/values/strings.xml
+        +    <string name="report_ai_content">Report Inappropriate AI Output</string>
+        +    <string name="ai_report_success">Thank you. This content has been submitted for review.</string>
+    prompt_template:
+      zh: |
+        我的应用包含 AI 生成文本/图片功能，Google Play 要求满足 GenAI 合规政策。
+        请帮我：
+        1. 设计一个极简的用户“举报不当 AI 内容”的 UI 弹窗和回调逻辑。
+        2. 给出一段适合填写在 Google Play 问卷中的“AI 功能描述与安全防护措施说明”。
+      en: |
+        My app features Generative AI outputs and must comply with Google Play's GenAI policy.
+        Please help:
+        1. Implement an in-app 'Report offensive AI content' dialog and feedback action.
+        2. Provide standard text explaining AI safeguards and user reporting mechanisms for Google Play Console submission.
+
+  - id: "RULE_PRIVACY_POLICY_URL"
+    severity: "FATAL"
+    doc_url: "https://support.google.com/googleplay/android-developer/answer/10787469"
+    category:
+      zh: "隐私合规 (Privacy Policy)"
+      en: "Privacy Policy"
+    title:
+      zh: "隐私政策 URL 可用性与 SSL 校验"
+      en: "Privacy Policy URL Availability & SSL Validation"
+    description:
+      zh: "Google Play 强制要求所有 App 必须提供公开可访问的隐私政策页面。若链接返回 404、500、证书无效或页面打不开，应用提交将立即被拒。"
+      en: "Google Play strictly requires all apps to link to an active, publicly accessible privacy policy over HTTPS. Dead links (404/500), SSL certificate errors, or unreachable pages trigger immediate rejection."
+    remediation_summary:
+      zh: "检查隐私政策链接，确保支持 HTTPS、全球公开可访问且内容包含数据收集说明。"
+      en: "Verify that your privacy policy URL is publicly accessible over HTTPS and includes disclosures on third-party SDK data collection."
+    code_diff:
+      zh: |
+        # 隐私政策链接配置规范 (HTTPS + 全球公网可达)
+        - http://insecure-link.example.com/privacy (不合规：HTTP 不安全或死链)
+        + https://yourdomain.com/privacy (合规：支持 HTTPS、SSL 证书有效、返回 200 OK)
+      en: |
+        # Privacy Policy URL Standard (HTTPS + Publicly Accessible Worldwide)
+        - http://insecure-link.example.com/privacy (Non-compliant: HTTP or dead link)
+        + https://yourdomain.com/privacy (Compliant: Valid HTTPS certificate, returns HTTP 200 OK)
+    prompt_template:
+      zh: |
+        我的隐私政策链接出现访问异常或证书问题。
+        请帮我：
+        1. 提供一个干净、符合 Google Play 要求的标准单页面隐私政策 HTML 模板（包含 AdMob 数据收集、用户权利等章节）。
+        2. 指导我如何将其一键免费部署到 GitHub Pages / Cloudflare Pages / Vercel 以获得永久稳定的 HTTPS 访问地址。
+      en: |
+        My privacy policy URL is inaccessible or has SSL issues.
+        Please help:
+        1. Provide a clean, compliant single-page Privacy Policy HTML template covering third-party SDK disclosures and user privacy rights.
+        2. Guide me on how to host it on GitHub Pages / Cloudflare Pages / Vercel for free to obtain a permanent HTTPS URL.
+
+  - id: "RULE_QUERY_ALL_PACKAGES"
+    severity: "FATAL"
+    doc_url: "https://support.google.com/googleplay/android-developer/answer/10158752"
+    category:
+      zh: "受限包体可见性 (Package Visibility Policy)"
+      en: "Package Visibility Policy"
+    title:
+      zh: "QUERY_ALL_PACKAGES 全量应用查询权限违规"
+      en: "QUERY_ALL_PACKAGES Broad Visibility Permission Violation"
+    description:
+      zh: "应用申请了 android.permission.QUERY_ALL_PACKAGES。Google Play 严禁常规应用声明此权限，仅反病毒、设备管理等极少数核心功能应用方可申请豁免。普通应用使用将直接被 Google Play 拒审或封禁下架。"
+      en: "The application requests android.permission.QUERY_ALL_PACKAGES. Google Play restricts this permission strictly to antivirus, device management, and search apps with core multi-app dependency. Regular apps will face immediate rejection."
+    remediation_summary:
+      zh: "在 AndroidManifest.xml 中移除 QUERY_ALL_PACKAGES，改用 Android 11+ <queries> 标签声明特定包名或 Intent Action。"
+      en: "Remove QUERY_ALL_PACKAGES and specify target packages or intents using the Android 11+ <queries> declaration in AndroidManifest.xml."
+    code_diff:
+      zh: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+        -    <!-- 严禁在常规 App 中声明全量包查询权限 -->
+        -    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+        +    <!-- 迁移为按需声明交互白名单 -->
+        +    <queries>
+        +        <intent>
+        +            <action android:name="android.intent.action.VIEW" />
+        +            <data android:scheme="https" />
+        +        </intent>
+        +    </queries>
+      en: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+        -    <!-- Prohibited for general apps on Google Play -->
+        -    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+        +    <!-- Refactor to explicit <queries> declarations -->
+        +    <queries>
+        +        <intent>
+        +            <action android:name="android.intent.action.VIEW" />
+        +            <data android:scheme="https" />
+        +        </intent>
+        +    </queries>
+    prompt_template:
+      zh: |
+        我的应用在 Google Play 提交被拒，因为声明了受限权限 android.permission.QUERY_ALL_PACKAGES。
+        请帮我：
+        1. 在 AndroidManifest.xml 中完全移除 <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />。
+        2. 检查应用中 PackageManager.getInstalledPackages 或 queryIntentActivities 的调用逻辑。
+        3. 依据应用实际需要拉起/唤醒的外部应用（如微信、WhatsApp、浏览器等），在 AndroidManifest.xml 中添加合规的 <queries> 白名单声明。
+      en: |
+        My app submission was rejected by Google Play due to android.permission.QUERY_ALL_PACKAGES.
+        Please help:
+        1. Remove <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" /> from AndroidManifest.xml.
+        2. Inspect code calling getInstalledPackages / queryIntentActivities.
+        3. Add specific <queries> whitelist elements in AndroidManifest.xml for target packages or intents that the app actually interacts with.
+
+  - id: "RULE_ACCOUNT_DELETION_POLICY"
+    severity: "HIGH"
+    doc_url: "https://support.google.com/googleplay/android-developer/answer/13327920"
+    category:
+      zh: "账号与隐私政策 (Account & Data Deletion)"
+      en: "Account & Data Deletion Policy"
+    title:
+      zh: "账号注销与数据删除路径合规要求"
+      en: "Account Deletion & User Data Deletion Requirement"
+    description:
+      zh: "检测到应用中包含用户登录/认证组件（如 Firebase Auth、Google Sign-In、Supabase 等）。根据 Google Play 规定，支持创建账号的应用必须在 App 设置内提供直接注销账号入口，且必须在 Console 提交公开的 Web 账号删除申请网址。"
+      en: "User authentication or account login components were detected. Google Play policy mandates that all apps supporting account creation must provide an in-app deletion path and a publicly accessible web deletion request URL."
+    remediation_summary:
+      zh: "在 App 内设置中增加'注销/删除账号'按钮，并在 Google Play Console 数据安全问卷中填写外部 Web 账号删除申请链接。"
+      en: "Provide an in-app 'Delete Account' button and declare an external web URL for account and data deletion in Play Console."
+    code_diff:
+      zh: |
+        <!-- 确保在应用内提供账号删除入口，并在 Web 端配置注销服务页面 -->
+        + App 内：设置 -> 账户安全 -> 申请注销并删除全部数据 (立即生效或 30 天冷静期)
+        + Play Console：数据安全 -> 账号删除网址 -> https://yourdomain.com/delete-account
+      en: |
+        <!-- Provide in-app deletion button and public web deletion URL -->
+        + In-App: Settings -> Account -> Delete Account & Data
+        + Play Console: Data Safety -> Account Deletion URL -> https://yourdomain.com/delete-account
+    prompt_template:
+      zh: |
+        Google Play 要求包含账号体系的应用必须满足 2024 账号注销政策。
+        请帮我：
+        1. 在客户端用户设置页设计一个优雅的“删除账号 (Delete Account)”危险操作弹窗与确认回调。
+        2. 编写调用后端删除用户 Token、个人数据及注销 Firebase/Supabase 账号的代码。
+        3. 生成一个符合 Google 审核规范的静态 Web 账号删除申请页面 (delete-account.html) 源码。
+      en: |
+        Google Play requires all apps with account systems to comply with the Account Deletion Policy.
+        Please help:
+        1. Implement an in-app 'Delete Account' confirmation dialog with safety confirmation.
+        2. Write the client-side logic to wipe user credentials and call the backend deletion endpoint.
+        3. Provide a standard standalone HTML template (delete-account.html) for the web deletion request URL.
+
+  - id: "RULE_STORAGE_PHOTO_PICKER"
+    severity: "HIGH"
+    doc_url: "https://developer.android.com/training/data-storage/shared/photopicker"
+    category:
+      zh: "存储权限政策 (Storage & Photo Access)"
+      en: "Storage & Photo Access Policy"
+    title:
+      zh: "相册与存储权限收紧，推荐迁移 Photo Picker"
+      en: "Storage Access Policy & Mandatory Photo Picker Migration"
+    description:
+      zh: "应用申请了广泛的存储权限（如 MANAGE_EXTERNAL_STORAGE 或旧版 READ_EXTERNAL_STORAGE）。Google Play 要求仅需选择照片/视频的常规应用必须改用系统原生 Photo Picker，严禁滥用宽泛存储权限。"
+      en: "Broad storage access permissions were detected (e.g. MANAGE_EXTERNAL_STORAGE or legacy READ_EXTERNAL_STORAGE). Google Play requires apps that only need user-selected media to adopt the system Photo Picker API instead of requesting broad storage permissions."
+    remediation_summary:
+      zh: "移除宽泛存储权限，使用 Android 13+ 系统免权限 Photo Picker (PickVisualMedia) 替代。"
+      en: "Remove broad storage permissions and adopt Android Photo Picker (PickVisualMedia) for zero-permission photo selection."
+    code_diff:
+      zh: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+        -    <!-- 严重违规：严禁普通应用申请全盘存储访问权限 -->
+        -    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+        -    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+        +    <!-- 无需任何权限：直接使用 ActivityResultContracts.PickVisualMedia -->
+      en: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+        -    <!-- Prohibited for non-file manager apps -->
+        -    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+        -    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+        +    <!-- Zero-permission alternative: ActivityResultContracts.PickVisualMedia -->
+    prompt_template:
+      zh: |
+        Google Play 严格限制应用申请 MANAGE_EXTERNAL_STORAGE 及 READ_EXTERNAL_STORAGE。
+        我的应用只需要让用户选择单张或多张照片/视频上传。
+        请帮我：
+        1. 在 AndroidManifest.xml 中删除存储权限。
+        2. 使用 Android 官方推荐的 ActivityResultContracts.PickVisualMedia() 编写 Kotlin/Jetpack Compose 相册选择器调用代码（完全免权限且跨 Android 4.4~15 兼容）。
+      en: |
+        Google Play strictly restricts MANAGE_EXTERNAL_STORAGE and broad storage permissions.
+        My app only needs users to select photos or videos.
+        Please help:
+        1. Remove storage permissions from AndroidManifest.xml.
+        2. Write standard Kotlin/Compose code using ActivityResultContracts.PickVisualMedia() to select media without runtime permissions.
+
+  - id: "RULE_16KB_PAGE_ALIGNMENT"
+    severity: "FATAL"
+    doc_url: "https://developer.android.com/guide/practices/page-sizes"
+    category:
+      zh: "系统硬性要求 (System Requirement)"
+      en: "System Requirement"
+    title:
+      zh: "Android 15+ 原生动态库 16KB 页面对齐合规"
+      en: "Android 15+ Native Library 16KB Page Alignment"
+    description:
+      zh: "从 Android 15 (Target SDK 35) 开始，Google Play 强制要求 64 位原生 C/C++ 动态库 (.so) 必须支持 16KB 页面大小对齐（p_align >= 0x4000）。包含 4KB 对齐 .so 的应用在 16KB 设备上运行将直接崩溃闪退（dlopen failed），并被 Google Play 审核拦截或下架。"
+      en: "Starting with Android 15 (Target SDK 35), Google Play mandates that all 64-bit native C/C++ shared libraries (.so) must support 16KB page alignment (p_align >= 0x4000). Apps with 4KB-aligned .so files crash upon loading on 16KB devices (dlopen failed) and face rejection or delisting by Google Play."
+    remediation_summary:
+      zh: "升级 NDK 至 r27+，或在 CMakeLists.txt / build.gradle 中配置链接参数 -Wl,-z,max-page-size=16384；第三方 SDK 请升级至 16KB 兼容版本。"
+      en: "Upgrade NDK to r27+ or add -Wl,-z,max-page-size=16384 to CMake/Gradle linker flags; upgrade third-party SDKs to 16KB-compatible releases."
+    code_diff:
+      zh: |
+        --- a/app/build.gradle
+        +++ b/app/build.gradle
+         android {
+             defaultConfig {
+                 externalNativeBuild {
+                     cmake {
+        +                // Android 15+ 强制要求：开启 16KB 内存页面大小对齐 (NDK r27+ 默认开启)
+        +                cppFlags "-Wl,-z,max-page-size=16384"
+                     }
+                 }
+                 ndk {
+        -            // 淘汰仅 32 位旧架构，重点保障 64 位 16KB 兼容
+        +            abiFilters "arm64-v8a", "x86_64"
+                 }
+             }
+         }
+      en: |
+        --- a/app/build.gradle
+        +++ b/app/build.gradle
+         android {
+             defaultConfig {
+                 externalNativeBuild {
+                     cmake {
+        +                // Enforce 16KB page alignment for Android 15+ compatibility
+        +                cppFlags "-Wl,-z,max-page-size=16384"
+                     }
+                 }
+                 ndk {
+        +            abiFilters "arm64-v8a", "x86_64"
+                 }
+             }
+         }
+    prompt_template:
+      zh: |
+        我的 Android 应用在 Google Play 审核或运行中因 64 位原生动态库 (.so) 未满足 16KB 页面对齐被警告或拦截。
+        检测到的非合规动态库包括：{non_compliant_libs}。
+        请帮我：
+        1. 检查 app/build.gradle 或 CMakeLists.txt，确保 NDK 版本升级至 r27 或更高（或在链接器参数中添加 -Wl,-z,max-page-size=16384）。
+        2. 如果这些 .so 来自第三方预编译 SDK（如第三方加固、旧版音视频或游戏引擎），请列出对应的升级替换排查清单。
+        3. 给出使用 readelf -lW 或 objdump -p 验证本地 .so 页面对齐是否达标的终端命令与检查步骤。
+      en: |
+        My Android application received a warning or rejection on Google Play because 64-bit native libraries (.so) do not meet 16KB page alignment requirements.
+        The non-compliant native libraries are: {non_compliant_libs}.
+        Please help:
+        1. Inspect app/build.gradle and CMakeLists.txt to upgrade NDK to r27+ or add linker flag: -Wl,-z,max-page-size=16384.
+        2. If these .so files come from third-party prebuilt SDKs, identify the SDK origins and provide upgrade recommendations.
+        3. Provide terminal commands and steps (such as readelf -lW) to verify 16KB page alignment locally.
