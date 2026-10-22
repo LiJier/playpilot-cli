@@ -50,8 +50,8 @@
 
 ### 2. 安装依赖 (Install)
 ```bash
-git clone https://github.com/your-username/PlayPilot.git
-cd PlayPilot
+git clone https://github.com/LiJier/playpilot-cli.git
+cd playpilot-cli
 pip install -r requirements.txt
 ```
 
