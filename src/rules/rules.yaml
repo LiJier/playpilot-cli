@@ -500,3 +500,92 @@ rules:
         1. Inspect app/build.gradle and CMakeLists.txt to upgrade NDK to r27+ or add linker flag: -Wl,-z,max-page-size=16384.
         2. If these .so files come from third-party prebuilt SDKs, identify the SDK origins and provide upgrade recommendations.
         3. Provide terminal commands and steps (such as readelf -lW) to verify 16KB page alignment locally.
+
+  - id: "RULE_EXACT_ALARM"
+    severity: "HIGH"
+    doc_url: "https://developer.android.com/about/versions/14/changes/schedule-exact-alarms"
+    category:
+      zh: "权限政策 (Permissions Policy)"
+      en: "Permissions Policy"
+    title:
+      zh: "精确闹钟 (SCHEDULE_EXACT_ALARM) 权限收紧与合规要求"
+      en: "Exact Alarm (SCHEDULE_EXACT_ALARM) Policy Compliance"
+    description:
+      zh: "应用声明了 android.permission.SCHEDULE_EXACT_ALARM。Google Play 政策严格限定该权限仅授予核心功能依赖精确时间触发的应用（如专职闹钟、日历或定时提醒）。常规应用滥用将被拒审或要求提交权限使用声明，建议改用 WorkManager 或 USE_EXACT_ALARM。"
+      en: "The application requests android.permission.SCHEDULE_EXACT_ALARM. Google Play policy strictly restricts this permission to apps whose core function depends on exact timing (e.g. alarm clocks or calendar reminders). Regular apps will be rejected; migrate to WorkManager or USE_EXACT_ALARM instead."
+    remediation_summary:
+      zh: "若非专职闹钟/日历应用，移除 SCHEDULE_EXACT_ALARM 并改用 WorkManager；若属时钟/计时器类核心功能，改用 USE_EXACT_ALARM。"
+      en: "Remove SCHEDULE_EXACT_ALARM and use WorkManager for periodic background tasks; if the app is an alarm/timer, migrate to USE_EXACT_ALARM."
+    code_diff:
+      zh: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+        -    <!-- 非专职时钟/日历类应用切勿声明 SCHEDULE_EXACT_ALARM -->
+        -    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+        +    <!-- 方案一：若是专职闹钟/秒表类，改用无需声明表单的权限 (Android 13+) -->
+        +    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+        +    <!-- 方案二：常规后台定时任务，改用系统 WorkManager，完全无需申请权限 -->
+      en: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+        -    <!-- Prohibited for general apps without core timing need -->
+        -    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+        +    <!-- Option 1: For core alarm/clock/timer apps, migrate to USE_EXACT_ALARM -->
+        +    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+        +    <!-- Option 2: For regular background sync, use WorkManager without permissions -->
+    prompt_template:
+      zh: |
+        我的应用因使用 SCHEDULE_EXACT_ALARM 在 Google Play 提交被警告或拦截。
+        请检查我的代码中的 AlarmManager 调度逻辑：
+        1. 如果是定时数据同步或常规提醒，请帮我重构为 Android 推荐的 WorkManager (PeriodicWorkRequest / OneTimeWorkRequest)。
+        2. 如果确实需要准时唤醒且属于专职闹钟/计时器应用，请在 AndroidManifest.xml 中将权限替换为 android.permission.USE_EXACT_ALARM。
+        3. 提供一段可向 Google Play 审核团队解释“为何核心功能必须使用精确闹钟”的申诉说明。
+      en: |
+        My app submission was flagged on Google Play due to android.permission.SCHEDULE_EXACT_ALARM.
+        Please help review AlarmManager usages:
+        1. If used for data syncing or periodic tasks, refactor to Android WorkManager (PeriodicWorkRequest).
+        2. If the app is genuinely an alarm clock or timer, replace with android.permission.USE_EXACT_ALARM in AndroidManifest.xml.
+        3. Draft a formal justification explaining why exact timing is critical to the core user feature.
+
+  - id: "RULE_FULL_SCREEN_INTENT"
+    severity: "HIGH"
+    doc_url: "https://developer.android.com/about/versions/14/changes/fsi-limits"
+    category:
+      zh: "权限政策 (Permissions Policy)"
+      en: "Permissions Policy"
+    title:
+      zh: "全屏意图 (USE_FULL_SCREEN_INTENT) 权限收紧"
+      en: "Full-Screen Intent (USE_FULL_SCREEN_INTENT) Policy"
+    description:
+      zh: "应用声明了 android.permission.USE_FULL_SCREEN_INTENT。从 Android 14 (API 34) 开始，该权限默认仅对电话来电或闹钟提醒应用自动授权。其他应用申请该权限，系统在新安装时将默认撤销，提审需在 Google Play Console 提交专属使用声明。"
+      en: "The application requests android.permission.USE_FULL_SCREEN_INTENT. Starting with Android 14 (API level 34), this permission is granted by default only to calling and alarm apps. For other apps, it is revoked by default on new installs and requires Play Console justification."
+    remediation_summary:
+      zh: "评估是否属于通话或闹钟类应用。若非核心场景，建议改用高优先级悬浮通知 (Heads-up Notification) 或引导用户至系统设置手动开启。"
+      en: "Evaluate if calling/alarms is core. If not, adopt high-priority Heads-up Notifications and guide users to system settings if full-screen is needed."
+    code_diff:
+      zh: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+        -    <!-- Android 14+ 常规应用慎用全屏通知意图，新装设备默认禁用 -->
+        -    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+        +    <!-- 建议改用标准高优先级通知渠道 (NotificationCompat.PRIORITY_HIGH) -->
+      en: |
+        --- a/app/src/main/AndroidManifest.xml
+        +++ b/app/src/main/AndroidManifest.xml
+        -    <!-- Revoked by default on Android 14+ for non-calling/alarm apps -->
+        -    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+        +    <!-- Adopt standard Heads-up notification channels with NotificationCompat.PRIORITY_HIGH -->
+    prompt_template:
+      zh: |
+        我的应用在 Android 14 下声明了 USE_FULL_SCREEN_INTENT 权限，面临 Google Play 政策限制。
+        请帮我：
+        1. 检查 NotificationCompat.Builder.setFullScreenIntent 的调用处。
+        2. 如果不是视频通话或紧急警报功能，重构为标准高优先级 Heads-up Notification。
+        3. 添加运行时检查 NotificationManager.canUseFullScreenIntent()，并在需要时引导用户前往系统设置特别访问权限页面手动开启。
+      en: |
+        My app requests USE_FULL_SCREEN_INTENT and faces Android 14+ Google Play restrictions.
+        Please help:
+        1. Review usages of NotificationCompat.Builder.setFullScreenIntent.
+        2. If not a calling or urgent alarm feature, refactor to standard high-priority Heads-up notifications.
+        3. Add runtime check using NotificationManager.canUseFullScreenIntent() and implement an intent to open Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT.
+

@@ -71,9 +71,10 @@ class RulesEngine:
                  privacy_url_result: Dict[str, Any] = None,
                  account_deletion_url: str = None,
                  lang: str = "zh",
-                 elf_result: Dict[str, Any] = None) -> Dict[str, Any]:
+                 elf_result: Dict[str, Any] = None,
+                 framework_info: Dict[str, Any] = None) -> Dict[str, Any]:
         """
-        Evaluates manifest, SDKs, ELF .so page alignment, and privacy URL against Google Play compliance rules with bilingual support.
+        Evaluates manifest, SDKs, ELF .so page alignment, privacy URL, and framework context against Google Play compliance rules with bilingual support.
         """
         findings = []
         target_sdk = manifest.get("target_sdk", 0)
@@ -636,6 +637,179 @@ class RulesEngine:
                     "message": msg,
                     "doc_url": doc_url
                 })
+
+        # 9. Exact Alarm Check (SCHEDULE_EXACT_ALARM / USE_EXACT_ALARM)
+        r_exact = self.rules_dict.get("RULE_EXACT_ALARM")
+        if r_exact:
+            title = self._localize(r_exact.get("title"), lang, "Exact Alarm Policy")
+            category = self._localize(r_exact.get("category"), lang, "Permissions Policy")
+            doc_url = r_exact.get("doc_url", "")
+            has_schedule_exact = "android.permission.SCHEDULE_EXACT_ALARM" in permissions
+            has_use_exact = "android.permission.USE_EXACT_ALARM" in permissions
+
+            if has_schedule_exact and target_sdk >= 33:
+                msg = (
+                    "Application requests android.permission.SCHEDULE_EXACT_ALARM. Google Play policy strictly restricts this permission to clock, calendar, and reminder apps. Regular apps face high rejection risk; migrate to WorkManager or USE_EXACT_ALARM."
+                    if is_en else
+                    "应用声明了 SCHEDULE_EXACT_ALARM 权限。从 Android 13+ 起，Google Play 严格限制非专职闹钟或日历类应用申请该权限，普通应用提审被拒率极高，建议改用 WorkManager 或 USE_EXACT_ALARM。"
+                )
+                findings.append({
+                    "rule_id": "RULE_EXACT_ALARM",
+                    "title": title,
+                    "category": category,
+                    "severity": "HIGH",
+                    "status": "FAIL",
+                    "message": msg,
+                    "doc_url": doc_url,
+                    "remediation": self._localize(r_exact.get("remediation_summary"), lang),
+                    "code_diff": self._localize(r_exact.get("code_diff"), lang),
+                    "prompt": self._localize(r_exact.get("prompt_template"), lang)
+                })
+            elif has_use_exact:
+                msg = (
+                    "Application requests android.permission.USE_EXACT_ALARM. Ensure the app core functionality qualifies as an alarm or timer."
+                    if is_en else
+                    "应用声明了 USE_EXACT_ALARM 权限。该权限仅限专职时钟或计时器类应用使用，提交时请核实是否属于核心功能。"
+                )
+                findings.append({
+                    "rule_id": "RULE_EXACT_ALARM",
+                    "title": title,
+                    "category": category,
+                    "severity": "MEDIUM",
+                    "status": "WARN",
+                    "message": msg,
+                    "doc_url": doc_url,
+                    "remediation": self._localize(r_exact.get("remediation_summary"), lang),
+                    "code_diff": self._localize(r_exact.get("code_diff"), lang),
+                    "prompt": self._localize(r_exact.get("prompt_template"), lang)
+                })
+            else:
+                msg = (
+                    "No restricted exact alarm permissions declared. Compliant with timing and battery policies."
+                    if is_en else
+                    "未申请受限的精确闹钟权限，符合 Google Play 定时与功耗合规政策。"
+                )
+                findings.append({
+                    "rule_id": "RULE_EXACT_ALARM",
+                    "title": title,
+                    "category": category,
+                    "severity": "PASS",
+                    "status": "PASS",
+                    "message": msg,
+                    "doc_url": doc_url
+                })
+
+        # 10. Full-Screen Intent Check (USE_FULL_SCREEN_INTENT)
+        r_fsi = self.rules_dict.get("RULE_FULL_SCREEN_INTENT")
+        if r_fsi:
+            title = self._localize(r_fsi.get("title"), lang, "Full-Screen Intent Policy")
+            category = self._localize(r_fsi.get("category"), lang, "Permissions Policy")
+            doc_url = r_fsi.get("doc_url", "")
+            has_fsi = "android.permission.USE_FULL_SCREEN_INTENT" in permissions
+
+            if has_fsi and target_sdk >= 34:
+                msg = (
+                    "Application requests android.permission.USE_FULL_SCREEN_INTENT on Android 14+ (API 34). Google Play restricts default access only to calling and alarm apps. Non-core apps must guide users to system settings manually."
+                    if is_en else
+                    "应用在 Target SDK >= 34 下申请了 USE_FULL_SCREEN_INTENT 全屏通知意图权限。从 Android 14 起，非电话或警报类应用在新装设备上该权限默认被系统关闭，提审需在 Console 提交专项声明。"
+                )
+                findings.append({
+                    "rule_id": "RULE_FULL_SCREEN_INTENT",
+                    "title": title,
+                    "category": category,
+                    "severity": "HIGH",
+                    "status": "FAIL",
+                    "message": msg,
+                    "doc_url": doc_url,
+                    "remediation": self._localize(r_fsi.get("remediation_summary"), lang),
+                    "code_diff": self._localize(r_fsi.get("code_diff"), lang),
+                    "prompt": self._localize(r_fsi.get("prompt_template"), lang)
+                })
+            elif has_fsi:
+                msg = (
+                    "Application requests USE_FULL_SCREEN_INTENT. When upgrading to Android 14 (targetSdk 34+), this permission will be revoked by default for non-calling apps."
+                    if is_en else
+                    "应用申请了 USE_FULL_SCREEN_INTENT 权限。后续升级至 Android 14 (targetSdk 34+) 时，非电话类应用在新装设备上默认将失去该权限。"
+                )
+                findings.append({
+                    "rule_id": "RULE_FULL_SCREEN_INTENT",
+                    "title": title,
+                    "category": category,
+                    "severity": "MEDIUM",
+                    "status": "WARN",
+                    "message": msg,
+                    "doc_url": doc_url,
+                    "remediation": self._localize(r_fsi.get("remediation_summary"), lang),
+                    "code_diff": self._localize(r_fsi.get("code_diff"), lang),
+                    "prompt": self._localize(r_fsi.get("prompt_template"), lang)
+                })
+            else:
+                msg = (
+                    "No full-screen intent permissions declared. Compliant with notification intrusion policies."
+                    if is_en else
+                    "未申请全屏通知意图权限，符合 Android 通知交互与防打扰政策。"
+                )
+                findings.append({
+                    "rule_id": "RULE_FULL_SCREEN_INTENT",
+                    "title": title,
+                    "category": category,
+                    "severity": "PASS",
+                    "status": "PASS",
+                    "message": msg,
+                    "doc_url": doc_url
+                })
+
+        # Framework-aware enrichment
+        if framework_info and framework_info.get("is_cross_platform"):
+            fw_id = framework_info.get("id")
+            fw_name = framework_info.get("name", "Cross-Platform")
+            for f in findings:
+                rid = f.get("rule_id")
+                if rid == "RULE_16KB_PAGE_ALIGNMENT" and f.get("status") == "FAIL":
+                    if fw_id == "flutter":
+                        f["framework_hint"] = (
+                            "🔷 Flutter 框架适配建议：建议升级 Flutter SDK >= 3.24（集成支持 16KB 内存页面对齐的 NDK r27+）。若使用自定义 C/C++ 插件，在 android/app/build.gradle 中配置 cppFlags \"-Wl,-z,max-page-size=16384\" 并执行 flutter clean && flutter build appbundle。"
+                            if not is_en else
+                            "🔷 Flutter note: Upgrade to Flutter SDK >= 3.24 (comes with 16KB-ready NDK r27+). For custom C/C++ plugins, configure cppFlags \"-Wl,-z,max-page-size=16384\" in android/app/build.gradle and run flutter clean && flutter build appbundle."
+                        )
+                    elif fw_id == "unity":
+                        f["framework_hint"] = (
+                            "🎮 Unity 框架适配建议：建议升级 Unity 编辑器至 2022.3.40+ 或 2023.2.20+；若导出 Gradle 工程，请在导出的 app/build.gradle 中配置 16KB 页面对齐链接参数。"
+                            if not is_en else
+                            "🎮 Unity note: Upgrade Unity Editor to 2022.3.40+ or 2023.2.20+; if exporting Gradle project, configure 16KB linker flags in app/build.gradle."
+                        )
+                    elif fw_id == "react_native":
+                        f["framework_hint"] = (
+                            "⚛️ React Native 框架适配建议：升级 NDK 版本至 r27+，并在 android/app/build.gradle 的 externalNativeBuild 中添加 -Wl,-z,max-page-size=16384。"
+                            if not is_en else
+                            "⚛️ React Native note: Upgrade NDK to r27+ and add -Wl,-z,max-page-size=16384 in android/app/build.gradle externalNativeBuild."
+                        )
+                elif rid == "RULE_STORAGE_PHOTO_PICKER" and f.get("status") == "FAIL":
+                    if fw_id == "flutter":
+                        f["framework_hint"] = (
+                            "🔷 Flutter 建议：推荐使用官方 image_picker 插件，Android 13+ 自动调用系统免权限 Photo Picker，无需在 AndroidManifest 中申请读写存储权限。"
+                            if not is_en else
+                            "🔷 Flutter note: Use official image_picker plugin. It automatically adopts the zero-permission Photo Picker on Android 13+."
+                        )
+                    elif fw_id == "react_native":
+                        f["framework_hint"] = (
+                            "⚛️ React Native 建议：推荐使用 react-native-image-picker 库，底层走 Android 系统 Photo Picker，免申请 MANAGE_EXTERNAL_STORAGE。"
+                            if not is_en else
+                            "⚛️ React Native note: Use react-native-image-picker, which uses Android system Photo Picker without storage permissions."
+                        )
+                elif rid == "RULE_TARGET_SDK" and f.get("status") == "FAIL":
+                    if fw_id == "flutter":
+                        f["framework_hint"] = (
+                            "🔷 Flutter 建议：在 android/app/build.gradle 中修改 targetSdkVersion = 34 或 targetSdk = 34。"
+                            if not is_en else
+                            "🔷 Flutter note: Set targetSdkVersion = 34 or targetSdk = 34 in android/app/build.gradle."
+                        )
+                    elif fw_id == "react_native":
+                        f["framework_hint"] = (
+                            "⚛️ React Native 建议：在 android/build.gradle 中修改 targetSdkVersion = 34。"
+                            if not is_en else
+                            "⚛️ React Native note: Update targetSdkVersion = 34 in android/build.gradle."
+                        )
 
         # Overall Status Calculation
         fatal_count = sum(1 for f in findings if f["severity"] == "FATAL" and f["status"] == "FAIL")

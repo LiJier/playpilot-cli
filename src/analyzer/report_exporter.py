@@ -14,7 +14,8 @@ class ReportExporter:
         detected_sdks: List[Dict[str, Any]],
         data_safety_report: Dict[str, Any],
         all_prompt: str,
-        lang: str = "zh"
+        lang: str = "zh",
+        framework_info: Optional[Dict[str, Any]] = None
     ) -> str:
         is_en = (lang == "en")
         now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -45,6 +46,7 @@ class ReportExporter:
                 "version": "Version",
                 "target_sdk": "Target SDK",
                 "min_sdk": "Minimum SDK",
+                "framework": "Framework Architecture",
                 "audit_time": "Audit Time",
                 "status": "Audit Status",
                 "fatal": "Fatal Blockers",
@@ -54,6 +56,7 @@ class ReportExporter:
                 "sdks": "Detected SDKs",
                 "problem": "Issue Description",
                 "remediation": "Remediation Advice",
+                "framework_hint": "Framework Specific Guidance",
                 "diff": "Recommended Code Diff",
                 "doc": "Official Documentation",
                 "sdk_table_name": "SDK Name",
@@ -79,6 +82,7 @@ class ReportExporter:
                 "version": "应用版本",
                 "target_sdk": "Target SDK",
                 "min_sdk": "最低 Min SDK",
+                "framework": "开发技术架构",
                 "audit_time": "检查生成时间",
                 "status": "检查结论",
                 "fatal": "严重问题",
@@ -88,6 +92,7 @@ class ReportExporter:
                 "sdks": "第三方 SDK 数",
                 "problem": "问题说明",
                 "remediation": "修复建议",
+                "framework_hint": "跨端适配建议",
                 "diff": "建议代码变更 (Code Diff)",
                 "doc": "官方政策参考",
                 "sdk_table_name": "SDK 名称",
@@ -100,7 +105,7 @@ class ReportExporter:
         lines = [
             title,
             "",
-            f"*{labels['audit_time']}*: `{now_str}` | *PlayPilot Engine Version*: `v1.3.0`",
+            f"*{labels['audit_time']}*: `{now_str}` | *PlayPilot Engine Version*: `v2.3.0`",
             "",
             "---",
             "",
@@ -108,7 +113,15 @@ class ReportExporter:
             f"- **{labels['package']}**: `{pkg}`",
             f"- **{labels['version']}**: `{ver_name}` (VersionCode: `{ver_code}`)",
             f"- **{labels['target_sdk']}**: `API {target_sdk}`",
-            f"- **{labels['min_sdk']}**: `API {min_sdk}`",
+            f"- **{labels['min_sdk']}**: `API {min_sdk}`"
+        ]
+
+        if framework_info:
+            fw_name = framework_info.get("name", "Native Android")
+            fw_icon = framework_info.get("icon", "🤖")
+            lines.append(f"- **{labels['framework']}**: `{fw_icon} {fw_name}`")
+
+        lines.extend([
             "",
             summary_header,
             f"**{labels['status']}**: **{status_text}**",
@@ -121,7 +134,7 @@ class ReportExporter:
             "",
             findings_header,
             ""
-        ]
+        ])
 
         # Detailed findings
         for finding in eval_result.get("findings", []):
@@ -142,6 +155,8 @@ class ReportExporter:
 
             lines.append(f"### {icon} [{badge}] {finding.get('title', '')}")
             lines.append(f"- **{labels['problem']}**: {finding.get('message', '')}")
+            if finding.get("framework_hint"):
+                lines.append(f"- **{labels['framework_hint']}**: {finding['framework_hint']}")
             if finding.get("remediation"):
                 lines.append(f"- **{labels['remediation']}**: {finding['remediation']}")
             if finding.get("code_diff"):

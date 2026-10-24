@@ -109,18 +109,124 @@ class TestRulesExpansion(unittest.TestCase):
         finding_clean = [f for f in res_clean["findings"] if f["rule_id"] == "RULE_STORAGE_PHOTO_PICKER"][0]
         self.assertEqual(finding_clean["status"], "PASS")
 
+    def test_exact_alarm_policy(self):
+        # 1. SCHEDULE_EXACT_ALARM on targetSdk 34 -> HIGH FAIL
+        manifest_exact = {
+            "target_sdk": 34,
+            "permissions": ["android.permission.INTERNET", "android.permission.SCHEDULE_EXACT_ALARM"],
+            "services": []
+        }
+        res = self.engine.evaluate(manifest_exact, [], lang="zh")
+        finding = [f for f in res["findings"] if f["rule_id"] == "RULE_EXACT_ALARM"][0]
+        self.assertEqual(finding["status"], "FAIL")
+        self.assertEqual(finding["severity"], "HIGH")
+        self.assertIn("WorkManager", finding["code_diff"])
+
+        # 2. USE_EXACT_ALARM -> WARN
+        manifest_use_exact = {
+            "target_sdk": 34,
+            "permissions": ["android.permission.INTERNET", "android.permission.USE_EXACT_ALARM"],
+            "services": []
+        }
+        res_use = self.engine.evaluate(manifest_use_exact, [], lang="zh")
+        finding_use = [f for f in res_use["findings"] if f["rule_id"] == "RULE_EXACT_ALARM"][0]
+        self.assertEqual(finding_use["status"], "WARN")
+
+        # 3. Clean
+        manifest_clean = {
+            "target_sdk": 34,
+            "permissions": ["android.permission.INTERNET"],
+            "services": []
+        }
+        res_clean = self.engine.evaluate(manifest_clean, [], lang="zh")
+        finding_clean = [f for f in res_clean["findings"] if f["rule_id"] == "RULE_EXACT_ALARM"][0]
+        self.assertEqual(finding_clean["status"], "PASS")
+
+    def test_full_screen_intent_policy(self):
+        # 1. USE_FULL_SCREEN_INTENT on targetSdk 34 -> HIGH FAIL
+        manifest_fsi = {
+            "target_sdk": 34,
+            "permissions": ["android.permission.INTERNET", "android.permission.USE_FULL_SCREEN_INTENT"],
+            "services": []
+        }
+        res = self.engine.evaluate(manifest_fsi, [], lang="zh")
+        finding = [f for f in res["findings"] if f["rule_id"] == "RULE_FULL_SCREEN_INTENT"][0]
+        self.assertEqual(finding["status"], "FAIL")
+        self.assertEqual(finding["severity"], "HIGH")
+
+        # 2. Clean
+        manifest_clean = {
+            "target_sdk": 34,
+            "permissions": ["android.permission.INTERNET"],
+            "services": []
+        }
+        res_clean = self.engine.evaluate(manifest_clean, [], lang="zh")
+        finding_clean = [f for f in res_clean["findings"] if f["rule_id"] == "RULE_FULL_SCREEN_INTENT"][0]
+        self.assertEqual(finding_clean["status"], "PASS")
+
     def test_new_sdk_signatures_present(self):
         scanner = DexScanner()
         sdk_ids = {s["id"] for s in scanner.signatures}
-        self.assertGreaterEqual(len(sdk_ids), 50)
-        self.assertIn("supabase_auth", sdk_ids)
-        self.assertIn("auth0", sdk_ids)
-        self.assertIn("aws_cognito", sdk_ids)
-        self.assertIn("branch_metrics", sdk_ids)
-        self.assertIn("posthog", sdk_ids)
-        self.assertIn("tradplus", sdk_ids)
-        self.assertIn("tencent_bugly", sdk_ids)
-        self.assertIn("wechat_sdk", sdk_ids)
+        self.assertGreaterEqual(len(sdk_ids), 80)
+        self.assertIn("fyber", sdk_ids)
+        self.assertIn("yandex_ads", sdk_ids)
+        self.assertIn("kwai_ads", sdk_ids)
+        self.assertIn("adapty", sdk_ids)
+        self.assertIn("qonversion", sdk_ids)
+        self.assertIn("superwall", sdk_ids)
+        self.assertIn("flurry", sdk_ids)
+        self.assertIn("intercom", sdk_ids)
+        self.assertIn("zendesk", sdk_ids)
+        self.assertIn("clerk_auth", sdk_ids)
+
+    def test_framework_detector(self):
+        import zipfile
+        import tempfile
+        from analyzer.framework_detector import FrameworkDetector
+
+        # Test Flutter detection
+        with tempfile.NamedTemporaryFile(suffix=".apk", delete=False) as tmp:
+            tmp_path = tmp.name
+        try:
+            with zipfile.ZipFile(tmp_path, "w") as z:
+                z.writestr("lib/arm64-v8a/libflutter.so", b"mock flutter binary")
+                z.writestr("assets/flutter_assets/AssetManifest.json", b"{}")
+            fw = FrameworkDetector.detect(tmp_path)
+            self.assertEqual(fw["id"], "flutter")
+            self.assertTrue(fw["is_cross_platform"])
+            self.assertEqual(fw["name"], "Flutter")
+        finally:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+
+        # Test React Native detection
+        with tempfile.NamedTemporaryFile(suffix=".apk", delete=False) as tmp:
+            tmp_path = tmp.name
+        try:
+            with zipfile.ZipFile(tmp_path, "w") as z:
+                z.writestr("lib/arm64-v8a/libreactnativejni.so", b"mock rn binary")
+                z.writestr("assets/index.android.bundle", b"mock bundle")
+            fw = FrameworkDetector.detect(tmp_path)
+            self.assertEqual(fw["id"], "react_native")
+            self.assertTrue(fw["is_cross_platform"])
+            self.assertEqual(fw["name"], "React Native")
+        finally:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+
+        # Test Native fallback
+        with tempfile.NamedTemporaryFile(suffix=".apk", delete=False) as tmp:
+            tmp_path = tmp.name
+        try:
+            with zipfile.ZipFile(tmp_path, "w") as z:
+                z.writestr("classes.dex", b"mock dex")
+            fw = FrameworkDetector.detect(tmp_path)
+            self.assertEqual(fw["id"], "native")
+            self.assertFalse(fw["is_cross_platform"])
+        finally:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
 
 if __name__ == "__main__":
     unittest.main()
+

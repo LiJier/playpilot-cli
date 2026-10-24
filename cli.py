@@ -20,6 +20,7 @@ if SRC_DIR not in sys.path:
 from analyzer.manifest_parser import ManifestParser
 from analyzer.dex_scanner import DexScanner
 from analyzer.elf_scanner import ElfScanner
+from analyzer.framework_detector import FrameworkDetector
 from analyzer.rules_engine import RulesEngine
 from analyzer.data_safety_mapper import DataSafetyMapper
 from analyzer.prompt_generator import PromptGenerator
@@ -63,43 +64,52 @@ def main():
     print(f"[*] Package Size   : {os.path.getsize(target_file) / (1024*1024):.2f} MB")
     print(f"[*] Language       : {args.lang.upper()}\n")
 
-    print("[1/4] Parsing AndroidManifest...")
+    print("[1/5] Detecting Application Framework Architecture...")
+    framework_info = FrameworkDetector.detect(target_file)
+    print(f"  + Framework    : {framework_info.get('icon', '🤖')} {framework_info.get('name', 'Native Android')}")
+    if framework_info.get("is_cross_platform"):
+        print(f"  + Cross-Platform Engine detected: {', '.join(framework_info.get('evidence', []))}")
+
+    print("\n[2/5] Parsing AndroidManifest...")
     manifest_parser = ManifestParser()
     try:
         manifest = manifest_parser.parse(target_file)
         print(f"  + Package Name : {manifest.get('package_name', 'N/A')}")
-        print(f"  + Target SDK   : {manifest.get('target_sdk_version', 'N/A')}")
-        print(f"  + Min SDK      : {manifest.get('min_sdk_version', 'N/A')}")
+        print(f"  + Target SDK   : {manifest.get('target_sdk_version', manifest.get('target_sdk', 'N/A'))}")
+        print(f"  + Min SDK      : {manifest.get('min_sdk_version', manifest.get('min_sdk', 'N/A'))}")
     except Exception as e:
         print(f"  [-] Manifest parsing warning: {e}")
         manifest = {}
 
-    print("\n[2/4] Scanning DEX bytefingerprints for 50+ third-party SDKs...")
+    print("\n[3/5] Scanning DEX bytefingerprints for 80+ third-party SDKs...")
     dex_scanner = DexScanner()
     detected_sdks = dex_scanner.scan(target_file)
-    print(f"  + Detected SDKs: {len(detected_sdks)} found ({', '.join(detected_sdks[:6])}{'...' if len(detected_sdks) > 6 else ''})")
+    sdk_names = [s.get("name", s.get("id")) if isinstance(s, dict) else str(s) for s in detected_sdks]
+    print(f"  + Detected SDKs: {len(detected_sdks)} found ({', '.join(sdk_names[:6])}{'...' if len(sdk_names) > 6 else ''})")
 
-    print("\n[3/4] Scanning 64-bit ELF shared libraries (.so) for 16KB page alignment...")
+    print("\n[4/5] Scanning 64-bit ELF shared libraries (.so) for 16KB page alignment...")
     elf_scanner = ElfScanner()
     elf_result = elf_scanner.scan(target_file)
-    so_total = elf_result.get("total_64bit_so_count", 0)
-    so_unaligned = elf_result.get("unaligned_so_count", 0)
+    so_total = elf_result.get("total_so_count", elf_result.get("total_64bit_so_count", 0))
+    so_unaligned = len(elf_result.get("non_compliant_libs", [])) if "non_compliant_libs" in elf_result else elf_result.get("unaligned_so_count", 0)
     if so_total > 0:
         if so_unaligned == 0:
-            print(f"  + 16KB Page Alignment: [PASS] All {so_total} 64-bit .so libraries aligned.")
+            print(f"  + 16KB Page Alignment: [PASS] All {so_total} native .so libraries aligned.")
         else:
             print(f"  + 16KB Page Alignment: [FAIL] {so_unaligned} of {so_total} .so libraries NOT aligned (Android 15 risk)!")
     else:
-        print("  + No 64-bit native libraries (.so) found (Safe).")
+        print("  + No native libraries (.so) found (Safe).")
 
-    print("\n[4/4] Evaluating Google Play Compliance Rules...")
-    engine = RulesEngine(lang=args.lang)
+    print("\n[5/5] Evaluating Google Play Compliance Rules...")
+    engine = RulesEngine()
     eval_result = engine.evaluate(
         manifest=manifest,
         detected_sdks=detected_sdks,
         elf_result=elf_result,
-        privacy_url=args.privacy_url,
-        account_deletion_url=args.account_del_url
+        privacy_url_result=None,
+        account_deletion_url=args.account_del_url,
+        lang=args.lang,
+        framework_info=framework_info
     )
 
     findings = eval_result.get("findings", [])

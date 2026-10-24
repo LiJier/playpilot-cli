@@ -1356,5 +1356,865 @@
       "ephemeral": false
     },
     "doc_url": "https://opendocs.alipay.com/open/204/105051"
+  },
+  {
+    "id": "fyber",
+    "name": "Digital Turbine / Fyber Mobile Ads",
+    "provider": "Digital Turbine",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/fyber",
+      "com.fyber"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics",
+        "Fraud prevention, security, and compliance"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://developer.digitalturbine.com"
+  },
+  {
+    "id": "yandex_ads",
+    "name": "Yandex Mobile Ads SDK",
+    "provider": "Yandex",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/yandex/mobile/ads",
+      "com.yandex.mobile.ads"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://yandex.com/dev/mobile-ads"
+  },
+  {
+    "id": "kwai_ads",
+    "name": "Kwai Ads SDK (快手海外商业化)",
+    "provider": "Kuaishou / Kwai",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/kwad/sdk",
+      "com.kwad.sdk"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://www.kwai.com"
+  },
+  {
+    "id": "criteo",
+    "name": "Criteo Mobile Ads SDK",
+    "provider": "Criteo",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/criteo/publisher",
+      "com.criteo.publisher"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://www.criteo.com"
+  },
+  {
+    "id": "moloco",
+    "name": "Moloco Ads SDK",
+    "provider": "Moloco",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/moloco/sdk",
+      "com.moloco.sdk"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://www.moloco.com"
+  },
+  {
+    "id": "smaato",
+    "name": "Smaato Mobile Advertising SDK",
+    "provider": "Smaato",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/smaato/sdk",
+      "com.smaato.sdk"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location"
+      ],
+      "purposes": [
+        "Advertising or marketing"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://www.smaato.com"
+  },
+  {
+    "id": "bidmachine",
+    "name": "BidMachine Programmatic Ad SDK",
+    "provider": "Stack Technologies",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "io/bidmachine",
+      "io.bidmachine"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://bidmachine.io"
+  },
+  {
+    "id": "ogury",
+    "name": "Ogury Mobile Ad SDK",
+    "provider": "Ogury",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "io/ogury",
+      "io.ogury"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://ogury.com"
+  },
+  {
+    "id": "startapp",
+    "name": "Start.io (StartApp) Mobile SDK",
+    "provider": "Start.io",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/startapp",
+      "com.startapp"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Approximate location",
+        "App interactions"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://www.start.io"
+  },
+  {
+    "id": "tapjoy",
+    "name": "Tapjoy Mobile Marketing & Offerwall",
+    "provider": "Tapjoy / ironSource",
+    "category": "Advertising and Monetization",
+    "signature_prefixes": [
+      "com/tapjoy",
+      "com.tapjoy"
+    ],
+    "required_permissions": [
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions",
+        "User IDs"
+      ],
+      "purposes": [
+        "Advertising or marketing",
+        "Analytics"
+      ],
+      "shared_with_third_parties": true,
+      "ephemeral": false
+    },
+    "doc_url": "https://www.tapjoy.com"
+  },
+  {
+    "id": "adapty",
+    "name": "Adapty In-App Purchases & Paywalls",
+    "provider": "Adapty Tech",
+    "category": "Payment and Monetization",
+    "signature_prefixes": [
+      "io/adapty",
+      "io.adapty"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Purchase history",
+        "User IDs"
+      ],
+      "purposes": [
+        "App functionality",
+        "Analytics",
+        "Personalization"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://adapty.io"
+  },
+  {
+    "id": "qonversion",
+    "name": "Qonversion Subscription Analytics",
+    "provider": "Qonversion",
+    "category": "Payment and Monetization",
+    "signature_prefixes": [
+      "io/qonversion",
+      "io.qonversion"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Purchase history",
+        "User IDs"
+      ],
+      "purposes": [
+        "App functionality",
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://qonversion.io"
+  },
+  {
+    "id": "superwall",
+    "name": "Superwall In-App Paywalls",
+    "provider": "Superwall",
+    "category": "Payment and Monetization",
+    "signature_prefixes": [
+      "com/superwall",
+      "com.superwall"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions",
+        "Purchase history"
+      ],
+      "purposes": [
+        "App functionality",
+        "Analytics",
+        "Personalization"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://superwall.com"
+  },
+  {
+    "id": "flurry",
+    "name": "Yahoo Flurry Analytics SDK",
+    "provider": "Yahoo",
+    "category": "Analytics",
+    "signature_prefixes": [
+      "com/flurry/android",
+      "com.flurry.android"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions",
+        "Diagnostics"
+      ],
+      "purposes": [
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://developer.yahoo.com/flurry"
+  },
+  {
+    "id": "countly",
+    "name": "Countly Mobile Analytics",
+    "provider": "Countly",
+    "category": "Analytics",
+    "signature_prefixes": [
+      "ly/count/android",
+      "ly.count.android"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions",
+        "Crash logs"
+      ],
+      "purposes": [
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://count.ly"
+  },
+  {
+    "id": "uxcam",
+    "name": "UXCam Mobile App Experience Analytics",
+    "provider": "UXCam",
+    "category": "Analytics",
+    "signature_prefixes": [
+      "com/uxcam",
+      "com.uxcam"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions",
+        "Diagnostics"
+      ],
+      "purposes": [
+        "Analytics",
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://uxcam.com"
+  },
+  {
+    "id": "smartlook",
+    "name": "Smartlook Mobile Session Recording",
+    "provider": "Smartlook / Cisco",
+    "category": "Analytics",
+    "signature_prefixes": [
+      "com/smartlook/sdk",
+      "com.smartlook.sdk"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions",
+        "Diagnostics"
+      ],
+      "purposes": [
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://www.smartlook.com"
+  },
+  {
+    "id": "logrocket",
+    "name": "LogRocket Mobile SDK",
+    "provider": "LogRocket",
+    "category": "Analytics & Diagnostics",
+    "signature_prefixes": [
+      "com/logrocket",
+      "com.logrocket"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions",
+        "Crash logs",
+        "Diagnostics"
+      ],
+      "purposes": [
+        "Analytics",
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://logrocket.com"
+  },
+  {
+    "id": "snowplow",
+    "name": "Snowplow Behavioral Tracker",
+    "provider": "Snowplow Analytics",
+    "category": "Analytics",
+    "signature_prefixes": [
+      "com/snowplowanalytics/snowplow",
+      "com.snowplowanalytics.snowplow"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "App interactions"
+      ],
+      "purposes": [
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://snowplow.io"
+  },
+  {
+    "id": "dynatrace",
+    "name": "Dynatrace Android APM Agent",
+    "provider": "Dynatrace",
+    "category": "Diagnostics & Performance",
+    "signature_prefixes": [
+      "com/dynatrace/android",
+      "com.dynatrace.android"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Crash logs",
+        "Diagnostics"
+      ],
+      "purposes": [
+        "Analytics",
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://www.dynatrace.com"
+  },
+  {
+    "id": "newrelic",
+    "name": "New Relic Mobile Telemetry SDK",
+    "provider": "New Relic",
+    "category": "Diagnostics & Performance",
+    "signature_prefixes": [
+      "com/newrelic/agent/android",
+      "com.newrelic.agent.android"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Crash logs",
+        "Diagnostics"
+      ],
+      "purposes": [
+        "Analytics",
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://newrelic.com"
+  },
+  {
+    "id": "instabug",
+    "name": "Instabug Bug & Crash Reporting SDK",
+    "provider": "Instabug",
+    "category": "Diagnostics & Feedback",
+    "signature_prefixes": [
+      "com/instabug/library",
+      "com.instabug.library"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Crash logs",
+        "Diagnostics",
+        "Other user-generated content"
+      ],
+      "purposes": [
+        "App functionality",
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://instabug.com"
+  },
+  {
+    "id": "appdynamics",
+    "name": "Cisco AppDynamics Mobile Agent",
+    "provider": "Cisco",
+    "category": "Diagnostics & Performance",
+    "signature_prefixes": [
+      "com/appdynamics/eumagent",
+      "com.appdynamics.eumagent"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "Crash logs",
+        "Diagnostics"
+      ],
+      "purposes": [
+        "Analytics",
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://www.appdynamics.com"
+  },
+  {
+    "id": "intercom",
+    "name": "Intercom Mobile In-App Messenger",
+    "provider": "Intercom",
+    "category": "Customer Engagement",
+    "signature_prefixes": [
+      "io/intercom/android",
+      "io.intercom.android"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "Email address",
+        "App interactions",
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality",
+        "Developer communications"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://www.intercom.com"
+  },
+  {
+    "id": "zendesk",
+    "name": "Zendesk Mobile Support SDK",
+    "provider": "Zendesk",
+    "category": "Customer Support",
+    "signature_prefixes": [
+      "zendesk/support",
+      "zendesk.support",
+      "zendesk/core"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "Email address",
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality",
+        "Developer communications"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://developer.zendesk.com"
+  },
+  {
+    "id": "customer_io",
+    "name": "Customer.io Mobile Messaging SDK",
+    "provider": "Customer.io",
+    "category": "Customer Engagement",
+    "signature_prefixes": [
+      "io/customer/messaginginapp",
+      "io.customer.messaginginapp",
+      "io/customer/sdk"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "Email address",
+        "Device or other IDs",
+        "App interactions"
+      ],
+      "purposes": [
+        "App functionality",
+        "Developer communications",
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://customer.io"
+  },
+  {
+    "id": "pusher",
+    "name": "Pusher Channels Mobile SDK",
+    "provider": "Pusher",
+    "category": "Realtime Messaging",
+    "signature_prefixes": [
+      "com/pusher/client",
+      "com.pusher.client"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": true
+    },
+    "doc_url": "https://pusher.com"
+  },
+  {
+    "id": "airship",
+    "name": "Airship (Urban Airship) Push SDK",
+    "provider": "Airship",
+    "category": "Push Notifications & Messaging",
+    "signature_prefixes": [
+      "com/urbanairship",
+      "com.urbanairship"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs",
+        "User IDs",
+        "App interactions"
+      ],
+      "purposes": [
+        "App functionality",
+        "Developer communications",
+        "Analytics"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://www.airship.com"
+  },
+  {
+    "id": "sendbird",
+    "name": "Sendbird Chat SDK",
+    "provider": "Sendbird",
+    "category": "In-App Chat",
+    "signature_prefixes": [
+      "com/sendbird/android",
+      "com.sendbird.android"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "App interactions",
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://sendbird.com"
+  },
+  {
+    "id": "clerk_auth",
+    "name": "Clerk Android Authentication SDK",
+    "provider": "Clerk",
+    "category": "Authentication and Security",
+    "signature_prefixes": [
+      "com/clerk/android",
+      "com.clerk.android"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "Email address",
+        "Phone number",
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality",
+        "Account management",
+        "Fraud prevention, security, and compliance"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://clerk.com"
+  },
+  {
+    "id": "appwrite",
+    "name": "Appwrite Android Client SDK",
+    "provider": "Appwrite",
+    "category": "Backend as a Service",
+    "signature_prefixes": [
+      "io/appwrite",
+      "io.appwrite"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "User IDs",
+        "Email address",
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality",
+        "Account management"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://appwrite.io"
+  },
+  {
+    "id": "firebase_firestore",
+    "name": "Firebase Cloud Firestore",
+    "provider": "Google LLC",
+    "category": "Cloud Database",
+    "signature_prefixes": [
+      "com/google/firebase/firestore",
+      "com.google.firebase.firestore"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://firebase.google.com/docs/firestore"
+  },
+  {
+    "id": "firebase_database",
+    "name": "Firebase Realtime Database",
+    "provider": "Google LLC",
+    "category": "Cloud Database",
+    "signature_prefixes": [
+      "com/google/firebase/database",
+      "com.google.firebase.database"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://firebase.google.com/docs/database"
+  },
+  {
+    "id": "realm",
+    "name": "MongoDB Realm Mobile Database",
+    "provider": "MongoDB",
+    "category": "Local / Sync Database",
+    "signature_prefixes": [
+      "io/realm",
+      "io.realm"
+    ],
+    "required_permissions": [],
+    "data_safety": {
+      "collected_data": [
+        "Device or other IDs"
+      ],
+      "purposes": [
+        "App functionality"
+      ],
+      "shared_with_third_parties": false,
+      "ephemeral": false
+    },
+    "doc_url": "https://realm.io"
   }
 ]
