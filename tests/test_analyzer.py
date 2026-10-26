@@ -64,7 +64,7 @@ class TestAnalyzer(unittest.TestCase):
         engine = RulesEngine()
         manifest = {
             "package_name": "com.compliant.app",
-            "target_sdk": 34,
+            "target_sdk": 36,
             "permissions": ["android.permission.INTERNET", "com.google.android.gms.permission.AD_ID"],
             "services": []
         }

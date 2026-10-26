@@ -1,7 +1,16 @@
 rules:
   - id: "RULE_TARGET_SDK"
     severity: "FATAL"
-    min_target_sdk: 34
+    min_target_sdk: 36
+    verified_on: "2026-10-26"
+    effective_date: "2026-08-31"
+    required_feature_min_target_sdk:
+      android.hardware.type.watch: 35
+      android.hardware.type.automotive: 35
+      android.software.leanback: 34
+      android.hardware.type.television: 34
+      android.software.xr.api.spatial: 34
+      android.software.xr.api.openxr: 34
     doc_url: "https://developer.android.com/google/play/requirements/target-sdk"
     category:
       zh: "系统硬性要求 (System Requirement)"
@@ -10,21 +19,21 @@ rules:
       zh: "Target SDK 等级合规性检查"
       en: "Target SDK Version Compliance Check"
     description:
-      zh: "Google Play 强制要求提交的新应用必须以 Android 14 (API 34) 或更高版本为目标平台。未达标应用提交将直接被 Play Console 拦截。"
-      en: "Google Play mandates that all new app submissions target Android 14 (API level 34) or higher. Submissions below this threshold will be blocked by Play Console."
+      zh: "自 2026-08-31 起，普通应用的新提交和更新要求 API 36；Wear OS/Automotive 为 35，TV/XR 为 34。仅存量分发、组织内部私有应用及延期资格需在 Play Console 单独核实。"
+      en: "From 2026-08-31, new apps and updates require API 36; Wear OS/Automotive require 35 and TV/XR require 34. Existing-app availability, permanently private apps and extension eligibility require separate Play Console review."
     remediation_summary:
-      zh: "修改 build.gradle 中的 targetSdk 与 compileSdk 至 34 或更高版本。"
-      en: "Update targetSdk and compileSdk in your build.gradle to 34 or higher."
+      zh: "修改 build.gradle 中的 targetSdk 与 compileSdk 至 {min_target_sdk} 或更高版本。"
+      en: "Update targetSdk and compileSdk in your build.gradle to {min_target_sdk} or higher."
     code_diff:
       zh: |
         --- a/app/build.gradle
         +++ b/app/build.gradle
          android {
         -    compileSdk 33
-        +    compileSdk 34
+        +    compileSdk {min_target_sdk}
              defaultConfig {
         -        targetSdk 33
-        +        targetSdk 34
+        +        targetSdk {min_target_sdk}
              }
          }
       en: |
@@ -32,24 +41,24 @@ rules:
         +++ b/app/build.gradle
          android {
         -    compileSdk 33
-        +    compileSdk 34
+        +    compileSdk {min_target_sdk}
              defaultConfig {
         -        targetSdk 33
-        +        targetSdk 34
+        +        targetSdk {min_target_sdk}
              }
          }
     prompt_template:
       zh: |
         我在提交 Google Play 审核时因 targetSdkVersion 不合规被拒。
         请检查我的 Android 项目：
-        1. 在 app/build.gradle 或 build.gradle.kts 中，将 targetSdk 和 compileSdk 修改为 34（或 35）。
-        2. 检查是否有因升级 API 34 而被废弃（Deprecated）的方法调用，并给出平滑替换代码。
+        1. 在 app/build.gradle 或 build.gradle.kts 中，将 targetSdk 和 compileSdk 修改为 {min_target_sdk} 或更高版本。
+        2. 检查是否有因升级目标 API 而被废弃（Deprecated）的方法调用，并给出平滑替换代码。
         3. 确保包含必要的 Java 8+ desugaring 配置（若使用了新 API 特性）。
       en: |
         My Android application submission was rejected by Google Play due to non-compliant targetSdkVersion.
         Please inspect my project files:
-        1. In app/build.gradle (or build.gradle.kts), update targetSdk and compileSdk to 34 (or 35).
-        2. Resolve any deprecated API usages introduced by targeting Android 14 (API 34).
+        1. In app/build.gradle (or build.gradle.kts), update targetSdk and compileSdk to {min_target_sdk} or higher.
+        2. Resolve any deprecated API usages introduced by targeting API {min_target_sdk}.
         3. Ensure Java 8+ core library desugaring is enabled if modern Java APIs are used.
 
   - id: "RULE_FOREGROUND_SERVICE"

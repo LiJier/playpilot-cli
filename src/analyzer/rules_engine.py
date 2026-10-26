@@ -87,16 +87,28 @@ class RulesEngine:
         # 1. Target SDK Check
         r_target_sdk = self.rules_dict.get("RULE_TARGET_SDK")
         if r_target_sdk:
-            min_sdk = r_target_sdk.get("min_target_sdk", 34)
+            min_sdk = r_target_sdk.get("min_target_sdk", 36)
+            required_features = {
+                feature["name"] for feature in manifest.get("uses_features", [])
+                if isinstance(feature, dict) and feature.get("required", True)
+                and feature.get("name")
+            }
+            exceptions = r_target_sdk.get("required_feature_min_target_sdk", {})
+            matched_minima = [value for feature, value in exceptions.items() if feature in required_features]
+            if matched_minima:
+                min_sdk = max(matched_minima)
+
+            def target_text(field):
+                return self._localize(r_target_sdk.get(field), lang).replace("{min_target_sdk}", str(min_sdk))
             title = self._localize(r_target_sdk.get("title"), lang, "Target SDK Compliance")
             category = self._localize(r_target_sdk.get("category"), lang, "System Requirement")
             doc_url = r_target_sdk.get("doc_url", "")
             
             if target_sdk < min_sdk:
                 msg = (
-                    f"Current targetSdkVersion is {target_sdk}, which is below Google Play mandatory requirement of {min_sdk}."
+                    f"Current targetSdkVersion is {target_sdk}, which is below the new-app/update requirement of {min_sdk}. Verify any private-app or deadline extension exemption in Play Console."
                     if is_en else
-                    f"当前应用 targetSdkVersion 为 {target_sdk}，低于 Google Play 强制要求的 {min_sdk}。"
+                    f"当前应用 targetSdkVersion 为 {target_sdk}，低于新应用/更新提交要求的 {min_sdk}。内部私有应用或延期资格需在 Play Console 单独核实。"
                 )
                 findings.append({
                     "rule_id": "RULE_TARGET_SDK",
@@ -106,9 +118,9 @@ class RulesEngine:
                     "status": "FAIL",
                     "message": msg,
                     "doc_url": doc_url,
-                    "remediation": self._localize(r_target_sdk.get("remediation_summary"), lang),
-                    "code_diff": self._localize(r_target_sdk.get("code_diff"), lang),
-                    "prompt": self._localize(r_target_sdk.get("prompt_template"), lang)
+                    "remediation": target_text("remediation_summary"),
+                    "code_diff": target_text("code_diff"),
+                    "prompt": target_text("prompt_template")
                 })
             else:
                 msg = (
@@ -800,15 +812,15 @@ class RulesEngine:
                 elif rid == "RULE_TARGET_SDK" and f.get("status") == "FAIL":
                     if fw_id == "flutter":
                         f["framework_hint"] = (
-                            "🔷 Flutter 建议：在 android/app/build.gradle 中修改 targetSdkVersion = 34 或 targetSdk = 34。"
+                            f"🔷 Flutter 建议：在 android/app/build.gradle 中修改 targetSdkVersion = {min_sdk} 或 targetSdk = {min_sdk}。"
                             if not is_en else
-                            "🔷 Flutter note: Set targetSdkVersion = 34 or targetSdk = 34 in android/app/build.gradle."
+                            f"🔷 Flutter note: Set targetSdkVersion = {min_sdk} or targetSdk = {min_sdk} in android/app/build.gradle."
                         )
                     elif fw_id == "react_native":
                         f["framework_hint"] = (
-                            "⚛️ React Native 建议：在 android/build.gradle 中修改 targetSdkVersion = 34。"
+                            f"⚛️ React Native 建议：在 android/build.gradle 中修改 targetSdkVersion = {min_sdk}。"
                             if not is_en else
-                            "⚛️ React Native note: Update targetSdkVersion = 34 in android/build.gradle."
+                            f"⚛️ React Native note: Update targetSdkVersion = {min_sdk} in android/build.gradle."
                         )
 
         # Overall Status Calculation

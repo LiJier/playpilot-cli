@@ -24,7 +24,7 @@
 > ### 🌐 Instant Web Version (No Installation Needed)
 > If you prefer not to set up local Python or Java environments, use our free online web app directly:  
 > 👉 **[https://play.ljcan.com](https://play.ljcan.com)**  
-> *Upload your package to inspect · Zero file retention · Export Play Console Data Safety CSVs · Generate AI fix suggestions*
+> *Upload your package to inspect · Uploaded packages deleted when the page session ends · Export Play Console Data Safety CSVs · Generate AI fix suggestions*
 
 ---
 
@@ -36,7 +36,7 @@
 * 📋 **Data Safety CSV Export**: Automatically maps 50+ popular third-party SDKs (e.g., AdMob, Firebase, Adjust, AppsFlyer) and exports official Google Play Console-compatible CSVs for instant batch import.
 * 💡 **Actionable AI Fix Suggestions**: Produces structured code remediation prompts tailored for AI coding assistants (Cursor, Claude Code, GitHub Copilot, Windsurf) to fix manifest and code declarations.
 * 🎯 **Comprehensive Google Play Policy Coverage**:
-  * Target SDK compliance (Android 14 / 15)
+  * Target SDK compliance (API 36 for ordinary new apps and updates)
   * 64-bit native library 16KB page alignment
   * Android 14 Foreground Service types (`foregroundServiceType`) validation
   * Advertising ID (`AD_ID`) permission vs. SDK declaration matching
@@ -80,6 +80,16 @@ python cli.py path/to/app-release.aab \
 ```
 
 ---
+
+
+## Scoring and privacy URL checks
+
+Web and CLI share the same score: start at 100, deduct 25 for fatal failures, 15 for high-risk failures and 5 for warnings, with a minimum of 15. This summarizes detected risks, not approval probability.
+
+`--privacy-url` makes an HTTP request and checks status, redirects and HTTPS certificate validation. No request is made when omitted. The CLI reads your local package without deleting it; Web uploads are deleted when their page session ends, with connection checks and expiry cleanup for abnormal disconnects.
+
+Ordinary new apps and updates require API 36; required Manifest device features identify Wear OS/Automotive (35) and TV/XR (34) exceptions. Extension and private-app eligibility need separate Play Console review. [Official requirements](https://developer.android.com/google/play/requirements/target-sdk)
+
 
 ## 🤖 CI/CD Automation (GitHub Actions)
 

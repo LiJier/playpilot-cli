@@ -1,21 +1,20 @@
-# -*- coding: utf-8 -*-
-"""
-SessionFileManager: Manages temporary package files scoped to a user session.
-Enforces session-level retention:
-1. Files are retained only during the active page session.
-2. Replacing an uploaded file physically removes the previous package.
-3. Explicit cleanup (via page unload beacon or reset) removes the package.
-4. Auto-expires and cleans up files older than 30 minutes (TTL) to prevent leaks.
-"""
+"""Temporary packages live only for their page session; no durable package store."""
 
-import os
-import time
+import asyncio
 import logging
+import os
+import re
 import tempfile
+import time
+import uuid
 from pathlib import Path
 from typing import Optional
 
 logger = logging.getLogger(__name__)
+
+
+class SessionClosedError(ValueError):
+    """An upload cannot finish after its page session has ended."""
 
 
 class SessionFileManager:
@@ -23,77 +22,116 @@ class SessionFileManager:
         self.base_dir = base_dir or (Path(tempfile.gettempdir()) / "playpilot_sessions")
         self.base_dir.mkdir(parents=True, exist_ok=True)
         self.ttl_seconds = ttl_seconds
+        self._closed = {}
+        self._uploads = {}
+
+    @staticmethod
+    def validate_session_id(session_id: str) -> str:
+        if not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", session_id or ""):
+            raise ValueError("Invalid session_id")
+        return session_id
 
     def _cleanup_expired(self):
-        """Scans session directory and removes files older than TTL."""
-        try:
-            now = time.time()
-            for p in self.base_dir.iterdir():
-                if p.is_file():
-                    try:
-                        if now - p.stat().st_mtime > self.ttl_seconds:
-                            p.unlink(missing_ok=True)
-                            logger.info(f"Cleaned up expired session file: {p.name}")
-                    except Exception as e:
-                        logger.warning(f"Failed to remove expired file {p}: {e}")
-        except Exception as e:
-            logger.warning(f"Error checking expired sessions: {e}")
-
-    async def save_upload(self, session_id: str, upload_file) -> Path:
-        """
-        Saves an uploaded package file for the given session_id.
-        Automatically destroys any previous file for this session.
-        """
-        self._cleanup_expired()
-        self.delete_session_file(session_id)
-
-        filename = upload_file.filename or "app.apk"
-        suffix = Path(filename).suffix.lower()
-        if suffix not in [".aab", ".apk"]:
-            suffix = ".apk"
-
-        # Sanitize session_id to avoid path traversal
-        safe_id = Path(session_id).name
-        target_path = self.base_dir / f"{safe_id}{suffix}"
-
-        with open(target_path, "wb") as f:
-            while True:
-                chunk = await upload_file.read(1024 * 1024)
-                if not chunk:
-                    break
-                f.write(chunk)
-            f.flush()
-
-        return target_path
-
-    def get_session_file(self, session_id: str) -> Optional[Path]:
-        """Returns the Path to the stored session file, if it exists."""
-        if not session_id:
-            return None
-        safe_id = Path(session_id).name
-        for ext in [".aab", ".apk"]:
-            p = self.base_dir / f"{safe_id}{ext}"
-            if p.exists() and p.is_file():
-                return p
-        return None
-
-    def delete_session_file(self, session_id: str) -> bool:
-        """Physically removes any existing file associated with session_id."""
-        if not session_id:
-            return False
-        safe_id = Path(session_id).name
-        deleted = False
-        for ext in [".aab", ".apk"]:
-            p = self.base_dir / f"{safe_id}{ext}"
-            if p.exists():
+        now = time.time()
+        for path in self.base_dir.iterdir():
+            if path.is_file() and path.suffix in {".apk", ".aab", ".part"}:
                 try:
-                    p.unlink(missing_ok=True)
+                    if now - path.stat().st_mtime >= self.ttl_seconds:
+                        path.unlink(missing_ok=True)
+                except OSError:
+                    logger.warning("Could not remove expired temporary package")
+        for sid, ended_at in list(self._closed.items()):
+            # Retry files held open by a parser or an in-flight upload on Windows.
+            self._delete_files(sid)
+            if now - ended_at >= self.ttl_seconds and sid not in self._uploads:
+                self._closed.pop(sid, None)
+
+    async def cleanup_loop(self, interval_seconds: float = 30):
+        while True:
+            await asyncio.sleep(interval_seconds)
+            self._cleanup_expired()
+
+    def _delete_files(self, session_id: str) -> bool:
+        deleted = False
+        paths = [self.base_dir / f"{session_id}{ext}" for ext in (".apk", ".aab")]
+        paths.extend(self.base_dir.glob(f"{session_id}_*.part"))
+        for path in paths:
+            try:
+                if path.exists():
+                    path.unlink(missing_ok=True)
                     deleted = True
-                    logger.info(f"Physically deleted session file: {p.name}")
-                except Exception as e:
-                    logger.warning(f"Failed to delete session file {p}: {e}")
+            except OSError:
+                logger.warning("Could not remove temporary package; cleanup will retry")
         return deleted
 
+    def delete_session_file(self, session_id: str) -> bool:
+        """End the session and invalidate uploads before attempting file removal."""
+        sid = self.validate_session_id(session_id)
+        self._closed[sid] = time.time()
+        return self._delete_files(sid)
 
-# Global singleton instance for the application
+    def is_closed(self, session_id: str) -> bool:
+        return session_id in self._closed
+
+    def touch_session(self, session_id: str):
+        sid = self.validate_session_id(session_id)
+        if sid in self._closed:
+            raise SessionClosedError("Session ended. Please upload the package again.")
+        paths = [self.base_dir / f"{sid}{ext}" for ext in (".apk", ".aab")]
+        paths.extend(self.base_dir.glob(f"{sid}_*.part"))
+        for path in paths:
+            try:
+                if path.is_file():
+                    os.utime(path, None)
+            except OSError:
+                pass
+
+    async def save_upload(self, session_id: str, upload_file) -> Path:
+        sid = self.validate_session_id(session_id)
+        if sid in self._closed:
+            raise SessionClosedError("Session ended. Please upload the package again.")
+        suffix = Path(upload_file.filename or "app.apk").suffix.lower()
+        if suffix not in {".aab", ".apk"}:
+            raise ValueError("Unsupported package type")
+        token = uuid.uuid4().hex
+        self._uploads[sid] = token
+        self._delete_files(sid)
+        partial = self.base_dir / f"{sid}_{token}.part"
+        target = self.base_dir / f"{sid}{suffix}"
+
+        def ensure_active():
+            if sid in self._closed or self._uploads.get(sid) != token:
+                raise SessionClosedError("Session ended or upload replaced.")
+
+        try:
+            with partial.open("wb") as output:
+                while True:
+                    ensure_active()
+                    chunk = await upload_file.read(1024 * 1024)
+                    ensure_active()
+                    if not chunk:
+                        break
+                    output.write(chunk)
+            ensure_active()
+            os.replace(partial, target)
+            return target
+        finally:
+            partial.unlink(missing_ok=True)
+            if self._uploads.get(sid) == token:
+                self._uploads.pop(sid, None)
+
+    def get_session_file(self, session_id: str) -> Optional[Path]:
+        sid = self.validate_session_id(session_id)
+        if sid in self._closed:
+            return None
+        for ext in (".aab", ".apk"):
+            path = self.base_dir / f"{sid}{ext}"
+            if path.is_file():
+                if time.time() - path.stat().st_mtime >= self.ttl_seconds:
+                    self.delete_session_file(sid)
+                    return None
+                return path
+        return None
+
+
 session_manager = SessionFileManager()

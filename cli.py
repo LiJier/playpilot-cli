@@ -22,6 +22,8 @@ from analyzer.dex_scanner import DexScanner
 from analyzer.elf_scanner import ElfScanner
 from analyzer.framework_detector import FrameworkDetector
 from analyzer.rules_engine import RulesEngine
+from analyzer.scoring import calculate_score_and_categories
+from analyzer.url_checker import UrlChecker
 from analyzer.data_safety_mapper import DataSafetyMapper
 from analyzer.prompt_generator import PromptGenerator
 
@@ -101,24 +103,20 @@ def main():
         print("  + No native libraries (.so) found (Safe).")
 
     print("\n[5/5] Evaluating Google Play Compliance Rules...")
+    privacy_probe = UrlChecker.check_privacy_url(args.privacy_url) if args.privacy_url else None
     engine = RulesEngine()
     eval_result = engine.evaluate(
         manifest=manifest,
         detected_sdks=detected_sdks,
         elf_result=elf_result,
-        privacy_url_result=None,
+        privacy_url_result=privacy_probe,
         account_deletion_url=args.account_del_url,
         lang=args.lang,
         framework_info=framework_info
     )
 
     findings = eval_result.get("findings", [])
-    fatal_cnt = sum(1 for f in findings if f.get("severity") == "FATAL" and f.get("status") != "PASS")
-    high_cnt = sum(1 for f in findings if f.get("severity") in ("HIGH", "MEDIUM_HIGH") and f.get("status") != "PASS")
-    warn_cnt = sum(1 for f in findings if f.get("severity") == "WARN" and f.get("status") != "PASS")
-
-    score = 100 - (fatal_cnt * 20 + high_cnt * 10 + warn_cnt * 4)
-    score = max(0, min(100, score))
+    score, fatal_cnt, high_cnt, warn_cnt, _ = calculate_score_and_categories(eval_result)
 
     print("\n" + "=" * 60)
     print(f"  COMPLIANCE SCORE: {score} / 100")
@@ -139,7 +137,7 @@ def main():
     print("👉 Try PlayPilot Online: https://play.ljcan.com")
     print("   • 1-Click Universal AI Agent Prompts for Cursor / Claude Code / Copilot")
     print("   • Official 783-line Data Safety CSV auto-export for Play Console")
-    print("   • Zero File Retention (Files destroyed immediately after parsing)")
+    print("   • Zero File Retention (Temporary packages deleted when the page session ends)")
     print("=" * 60 + "\n")
 
 if __name__ == "__main__":

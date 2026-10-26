@@ -200,6 +200,10 @@ class ManifestParser:
             "version_code": version_code,
             "min_sdk": min_sdk,
             "target_sdk": target_sdk,
+            "uses_features": [
+                {"name": get_attr(feature, "name"), "required": get_attr(feature, "required") != "false"}
+                for feature in root.findall("uses-feature") if get_attr(feature, "name")
+            ],
             "permissions": permissions,
             "services": services,
             "activities": activities,

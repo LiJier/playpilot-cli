@@ -24,7 +24,7 @@
 > ### 🌐 在线免安装体验 (Web App)
 > 如果不想在本地配置 Python 或 Java 环境，可以直接使用网页版：  
 > 👉 **[https://play.ljcan.com](https://play.ljcan.com)**  
-> *上传安装包即可开始排查 · 本地临时分析不保存文件 · 支持一键导出 Play Console 数据安全 CSV*
+> *上传安装包即可开始排查 · 网页会话结束删除上传包体 · 支持一键导出 Play Console 数据安全 CSV*
 
 ---
 
@@ -80,6 +80,15 @@ python cli.py path/to/app-release.aab \
 ```
 
 ---
+
+## 评分与隐私链接探测
+
+Web 与 CLI 统一使用 100 分起算、致命失败扣 25、高危失败扣 15、警告扣 5、最低 15 分的规则。评分仅用于汇总风险，不代表审核通过概率。
+
+提供 `--privacy-url` 时会实际请求该网址，校验 HTTP 状态、重定向及 HTTPS 证书；未提供时不发起请求。CLI 只读本地安装包，不会删除用户原文件；网页上传包体在页面会话结束时删除，异常断线由连接检测与过期清理兜底。
+
+当前普通应用的新提交与更新检查 API 36；根据 Manifest 必需设备特性识别 Wear OS/Automotive 35、TV/XR 34 例外。延期和内部私有应用资格需在 Play Console 单独核实。[Google 官方要求](https://developer.android.com/google/play/requirements/target-sdk)
+
 
 ## 🤖 CI/CD 自动化集成 (GitHub Actions)
 
