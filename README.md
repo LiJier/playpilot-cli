@@ -1,143 +1,111 @@
-<p align="center">
-  <img src="https://play.ljcan.com/logo.svg" alt="PlayPilot Logo" width="96" height="96" />
-</p>
+# PlayPilot CLI — Google Play Preflight Checker for APK & AAB
 
-<h1 align="center">PlayPilot CLI</h1>
+Inspect Android release packages locally for target SDK, selected manifest permissions, SDK fingerprints and 16 KB ELF segment-alignment risks before submission.
 
-<p align="center">
-  <strong>Google Play 上架合规预检工具 · 纯静态排查常见被拒风险与修复指引</strong><br />
-  <em>Pure-static, zero-retention pre-flight compliance auditor for Android AAB & APK</em>
-</p>
+**English** · [简体中文](README_ZH.md) · [Guides](#practical-guides) · [Release notes](CHANGELOG.md) · MIT
 
-<p align="center">
-  <a href="https://play.ljcan.com"><img src="https://img.shields.io/badge/🌐%20Live%20Web%20App-play.ljcan.com-00C853?style=for-the-badge&logo=googleplay&logoColor=white" alt="Live Web App" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License" /></a>
-  <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
-</p>
+After [installation](#installation), inspect your release package:
 
-<p align="center">
-  <strong>简体中文</strong> | <a href="README_EN.md">English</a>
-</p>
+```bash
+python -X utf8 cli.py path/to/app-release.apk --lang en
+```
 
----
+## Actual inspection output
 
-> ### 🌐 在线免安装体验 (Web App)
-> 如果不想在本地配置 Python 或 Java 环境，可以直接使用网页版：  
-> 👉 **[https://play.ljcan.com](https://play.ljcan.com)**  
-> *上传安装包即可开始排查 · 网页会话结束删除上传包体 · 确认实际数据行为后导出 Data Safety CSV*
+The following excerpts were captured from Androguard's public hello-world test APK on 2026-10-28. This old sample is deliberately useful for demonstrating a target SDK finding; it is not a customer deployment or a current compliant application.
 
----
+```text
+[2/5] Parsing AndroidManifest...
+  + Package Name : de.rhab.helloworld
+  + Target SDK   : 25
+  + Min SDK      : 21
+```
 
-## 🌟 核心排查能力 (Features)
+```text
+  COMPLIANCE SCORE: 75 / 100
+  Findings: 1 Fatal | 0 High Risk | 0 Warnings
+============================================================
+  [FATAL]  Target SDK Version Compliance Check
+           Tip: Update targetSdk and compileSdk in your build.gradle to 36 or higher....
+```
 
-* ⚡ **纯静态快速分析**：无需真机或模拟器运行环境，直接静态解析 AAB/APK 安装包特征。
-* 🛡️ **数据安全保障**：所有分析均在本地机器完成，绝不上传包体到任何第三方服务器。
-* 📐 **16KB 动态库页面对齐排查**：静态检查 64 位 `.so` 共享库 ELF Header，排查 Android 15 要求的 16KB Page Alignment，规避启动闪退风险。
-* 📋 **Data Safety 复核与导出（Web）**：SDK 检测只提供候选数据。通过网页版逐项确认收集、共享、用途、加密和删除方式，再导出草稿或已确认 CSV，并在 Play Console 复核。
-* 💡 **代码修复建议**：针对不合规项生成修改建议，可直接复制给 Cursor、Claude Code 或 GitHub Copilot 等工具辅助修改。
-* 🎯 **全面覆盖常见 Google Play 政策审查项**：
-  * Target SDK 适配要求（Android 14 / 15）
-  * 64 位原生库 16KB 页面对齐合规
-  * Android 14 前台服务 (`foregroundServiceType`) 声明校验
-  * 广告 ID (`AD_ID`) 权限与 SDK 声明匹配
-  * 账号注销政策与公开注销链接检查
-  * 存储权限与 Photo Picker 替代建议
-  * 隐私政策网址有效性检测
+[Full output, fixed source and SHA-256](examples/README.md) · Reproduce with `python -X utf8 examples/reproduce_hello_world.py --download --check`.
 
----
+The result is 75/100 because one fatal finding deducts 25 points. A score is a risk summary, not an approval probability. The sample has no native libraries and no recognized SDK signatures; those results do not establish runtime compatibility or absence of data collection.
 
-## 🛠️ 快速上手 (Quick Start)
+## Scope and limits
 
-CLI 命令行入口执行安装包检查，没有交互问卷或 CSV 导出参数。仓库同步保留核心 CSV 生成器与校验模块供开发使用；未提供确认答案时仅生成留空草稿，不根据 SDK 自动填写申报事实。
+| Inspects | Requires separate review |
+| --- | --- |
+| APK/AAB manifests and selected target SDK/permission rules | Complete policy applicability, store listing and account eligibility |
+| Known DEX SDK prefixes and framework file signatures | Runtime behavior, library configuration/version and first-party/backend data flows |
+| ELF load-segment alignment in native libraries | Final APK ZIP alignment and testing on a 16 KB device |
+| A supplied privacy URL's HTTP reachability and TLS | Accuracy/completeness of policy text and deletion workflows |
 
-### 1. 环境要求 (Prerequisites)
-- Python 3.10+
-- Java Runtime (JRE 11+)：如果需要解析 `.aab` 格式（调用内部 bundletool.jar）
+The CLI reads your local package without uploading it or deleting your original file. Supplying `--privacy-url` makes a network request to that URL. Unknown SDKs and parser fallbacks need review. The command has no interactive Data Safety questionnaire or CSV export flags, and may return exit code `0` even when findings fail.
 
-### 2. 安装依赖 (Install)
+## Web workbench
+
+For a visual report, remediation prompts and a manually reviewed Data Safety CSV, use **[PlayPilot Web](https://play.ljcan.com/en/)**. Uploaded packages are temporary to the page session and deleted when it ends. SDK candidates are not preselected declaration answers; confirm actual data practices and review any import in Play Console.
+
+## Installation
+
+Python 3.10+ is required by the source. The release was verified with Python 3.13.7 on Windows; it is not a full compatibility-matrix claim. AAB manifest parsing additionally needs a Java runtime compatible with the bundled bundletool. APK inspection does not require Java.
+
 ```bash
 git clone https://github.com/LiJier/playpilot-cli.git
 cd playpilot-cli
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
+python -X utf8 cli.py path/to/app-release.apk --lang en
 ```
 
-### 3. 执行检查 (Usage)
+Use `-X utf8` for the CLI's Unicode output, particularly on Windows. If inspecting AABs, check the bundled tool before running an inspection:
 
-#### 基础检测
 ```bash
-python cli.py path/to/app-release.aab
+java -jar src/bin/bundletool.jar version
+python -X utf8 cli.py path/to/app-release.aab --lang en
 ```
 
-#### 中文输出模式
+## Options
+
+| Input | Behavior |
+| --- | --- |
+| `file` | Path to an existing APK or AAB |
+| `--lang en` / `--lang zh` | English (default) or Chinese findings |
+| `--privacy-url URL` | Actually probes the supplied URL; omission makes no privacy-page request |
+| `--account-del-url URL` | Supplies the deletion link to the rule engine; does not test the deletion workflow |
+
 ```bash
-python cli.py path/to/app-release.apk --lang zh
+python -X utf8 cli.py path/to/app-release.apk --lang zh
+python -X utf8 cli.py path/to/app-release.apk --privacy-url https://example.com/privacy
 ```
 
-#### 带合规网址验证
-```bash
-python cli.py path/to/app-release.aab \
-  --lang zh \
-  --privacy-url "https://example.com/privacy" \
-  --account-del-url "https://example.com/delete-account"
-```
+Replace `example.com` with your own page. Run `python -X utf8 cli.py --help` for the current command options.
 
----
+## Practical guides
 
-## 评分与隐私链接探测
+- [Check 16 KB ELF alignment in an APK or AAB](docs/16kb-elf-alignment.md): locate affected libraries and separate ELF, ZIP and runtime checks.
+- [Inspect target SDK and AndroidManifest permissions](docs/target-sdk-manifest.md): interpret parsed values, required-device exceptions and selected permission findings.
+- [Use SDK detection for Data Safety review](docs/sdk-data-safety-review.md): turn candidates into an evidence checklist without assuming collection or sharing facts.
+- [Reproduce real and synthetic inspection examples](examples/README.md): fixed public APK capture and temporary ELF-header demonstration.
 
-Web 与 CLI 统一使用 100 分起算、致命失败扣 25、高危失败扣 15、警告扣 5、最低 15 分的规则。评分仅用于汇总风险，不代表审核通过概率。
+## Scoring and current policy baseline
 
-提供 `--privacy-url` 时会实际请求该网址，校验 HTTP 状态、重定向及 HTTPS 证书；未提供时不发起请求。CLI 只读本地安装包，不会删除用户原文件；网页上传包体在页面会话结束时删除，异常断线由连接检测与过期清理兜底。
+Web and CLI share the same score: start at 100, subtract 25 per fatal failure, 15 per high-risk failure and 5 per warning, with a floor of 15.
 
-当前普通应用的新提交与更新检查 API 36；根据 Manifest 必需设备特性识别 Wear OS/Automotive 35、TV/XR 34 例外。延期和内部私有应用资格需在 Play Console 单独核实。[Google 官方要求](https://developer.android.com/google/play/requirements/target-sdk)
+As verified on 2026-10-28, ordinary new apps/updates require target API 36; required-device features identify Wear OS/Automotive 35 and TV/XR 34 exceptions. Existing-app availability and extensions are separate. Recheck [Google's target API requirements](https://developer.android.com/google/play/requirements/target-sdk) and your Console before submission.
 
-
-## 🤖 CI/CD 自动化集成 (GitHub Actions)
-
-可将 PlayPilot CLI 轻松嵌入流水线中，在提审构建阶段自动执行合规预检：
-
-```yaml
-name: Play Store Pre-flight Check
-
-on:
-  push:
-    branches: [ release/**, main ]
-
-jobs:
-  preflight-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run PlayPilot Compliance Check
-        run: |
-          python cli.py build/outputs/bundle/release/app-release.aab --lang en
-```
-
----
-
-## 🧪 运行单元测试 (Running Tests)
+## Development and releases
 
 ```bash
 python -m unittest discover tests
+python -X utf8 examples/elf_alignment_demo.py
 ```
 
----
+[v0.1.0 release notes](CHANGELOG.md) record the included functionality, actual validation and known limits. This initial CLI release number is independent of the Web backend version. Install from source; the project does not currently distribute a PyPI package or compiled CLI binary.
 
-## 📄 开源许可 (License)
+The shared Data Safety modules support programmatic use, but are not a terminal questionnaire. Changes and reproducible reports are welcome through [Issues](https://github.com/LiJier/playpilot-cli/issues) and pull requests; describe the command, version and minimal reproduction.
 
-本项目采用 [MIT License](LICENSE) 开源许可。
+## License
+
+[MIT](LICENSE). The public APK example links to its upstream source and is not bundled in this repository or release.

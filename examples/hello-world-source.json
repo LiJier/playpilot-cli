@@ -1,0 +1,14 @@
+{
+  "upstream_repository": "https://github.com/androguard/androguard",
+  "upstream_commit": "581f7a3251545a97f66ee92b674dd810ee380a00",
+  "url": "https://raw.githubusercontent.com/androguard/androguard/581f7a3251545a97f66ee92b674dd810ee380a00/tests/data/APK/hello-world.apk",
+  "sha256": "f427a0ebe0bca97b9acf6cd2a2a01c37a7d3762841810fc54a7191ec637330b2",
+  "size_bytes": 1722314,
+  "local_path": "downloads/hello-world-581f7a325154.apk",
+  "command": "python -X utf8 cli.py downloads/hello-world-581f7a325154.apk --lang en",
+  "captured_on": "2026-10-28",
+  "analyzer_revision": "f2f2c243800b7ff4ae66e655345746e1a7570bfb",
+  "python_version": "3.13.7",
+  "platform": "Windows",
+  "stdout_normalization": "LF line endings; trailing whitespace and trailing empty lines removed"
+}
