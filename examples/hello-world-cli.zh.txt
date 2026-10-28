@@ -1,0 +1,53 @@
+
+  ____  _             ____  _ _       _
+ |  _ \| | __ _ _   _|  _ \(_) | ___ | |_
+ | |_) | |/ _` | | | | |_) | | |/ _ \| __|
+ |  __/| | (_| | |_| |  __/| | | (_) | |_
+ |_|   |_|\__,_|\__, |_|   |_|_|\___/ \__|
+                |___/  Pre-flight Inspector
+
+  Google Play Policy & Pre-flight Compliance Auditor (Pure-Static)
+  Web Version: https://play.ljcan.com
+------------------------------------------------------------
+[*] Target Package: hello-world-581f7a325154.apk
+[*] Package Size   : 1.64 MB
+[*] Language       : ZH
+
+[1/5] Detecting Application Framework Architecture...
+  + Framework    : 🤖 Native Android
+
+[2/5] Parsing AndroidManifest...
+  + Package Name : de.rhab.helloworld
+  + Target SDK   : 25
+  + Min SDK      : 21
+
+[3/5] Scanning DEX bytefingerprints for 80+ third-party SDKs...
+  + Detected SDKs: 0 found ()
+
+[4/5] Scanning 64-bit ELF shared libraries (.so) for 16KB page alignment...
+  + No native libraries (.so) found (Safe).
+
+[5/5] Evaluating Google Play Compliance Rules...
+
+============================================================
+  COMPLIANCE SCORE: 75 / 100
+  Findings: 1 Fatal | 0 High Risk | 0 Warnings
+============================================================
+  [FATAL]  Target SDK 等级合规性检查
+           Tip: 修改 build.gradle 中的 targetSdk 与 compileSdk 至 36 或更高版本。...
+  [PASS]   Android 14+ 前台服务必须声明明确类型
+  [PASS]   高危受限敏感权限审核风险
+  [PASS]   QUERY_ALL_PACKAGES 全量应用查询权限违规
+  [PASS]   账号注销与数据删除路径合规要求
+  [PASS]   相册与存储权限收紧，推荐迁移 Photo Picker
+  [PASS]   Android 15+ 原生动态库 16KB 页面对齐合规
+  [PASS]   精确闹钟 (SCHEDULE_EXACT_ALARM) 权限收紧与合规要求
+  [PASS]   全屏意图 (USE_FULL_SCREEN_INTENT) 权限收紧
+
+============================================================
+🚀 Want full AI remediation prompts & Google Play Data Safety CSV?
+👉 Try PlayPilot Online: https://play.ljcan.com
+   • 1-Click Universal AI Agent Prompts for Cursor / Claude Code / Copilot
+   • Review SDK data candidates and confirm Data Safety CSV answers
+   • Zero File Retention (Temporary packages deleted when the page session ends)
+============================================================

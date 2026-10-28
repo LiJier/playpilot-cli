@@ -1,5 +1,7 @@
 # Changelog
 
+**English** · [简体中文](CHANGELOG_ZH.md)
+
 ## v0.1.0 — 2026-10-28
 
 First tagged CLI release of the existing open-source inspector. This is a CLI release number, independent of the Web backend version.

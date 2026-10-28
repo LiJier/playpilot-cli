@@ -1,6 +1,6 @@
 # Check 16 KB ELF alignment in an Android APK or AAB
 
-[README](../README.md) · [Reproducible examples](../examples/README.md) · [Target SDK guide](target-sdk-manifest.md)
+**English** · [简体中文](16kb-elf-alignment.zh.md) · [README](../README.md) · [Reproducible examples](../examples/README.md) · [Target SDK guide](target-sdk-manifest.md)
 
 An Android application can include native code directly or through a framework or SDK. Raising `targetSdk` does not rebuild precompiled native libraries.
 

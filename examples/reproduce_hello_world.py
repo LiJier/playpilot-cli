@@ -20,6 +20,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--download", action="store_true", help="Download the pinned public APK if missing")
     parser.add_argument("--check", action="store_true", help="Compare with the recorded stdout without overwriting it")
+    parser.add_argument("--lang", choices=["en", "zh"], default="en", help="Language of recorded findings")
     args = parser.parse_args()
     metadata = json.loads((ROOT / "examples/hello-world-source.json").read_text(encoding="utf-8"))
     package = ROOT / metadata["local_path"]
@@ -35,7 +36,7 @@ def main():
     if hashlib.sha256(package.read_bytes()).hexdigest() != metadata["sha256"]:
         raise SystemExit("Local sample checksum differs; refusing to inspect it.")
     run = subprocess.run(
-        [sys.executable, "-X", "utf8", "cli.py", metadata["local_path"], "--lang", "en"],
+        [sys.executable, "-X", "utf8", "cli.py", metadata["local_path"], "--lang", args.lang],
         cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
         env={**os.environ, "PYTHONIOENCODING": "utf-8"},
     )
@@ -43,7 +44,7 @@ def main():
         sys.stderr.write(run.stderr)
         raise SystemExit(run.returncode)
     output = "\n".join(line.rstrip() for line in run.stdout.splitlines()).rstrip() + "\n"
-    destination = ROOT / "examples/hello-world-cli.txt"
+    destination = ROOT / ("examples/hello-world-cli.zh.txt" if args.lang == "zh" else "examples/hello-world-cli.txt")
     if args.check:
         expected = destination.read_text(encoding="utf-8")
         if expected != output:
@@ -52,7 +53,7 @@ def main():
         print("Recorded CLI stdout reproduced exactly.")
     else:
         destination.write_text(output, encoding="utf-8")
-        print("Updated examples/hello-world-cli.txt; review changes before committing.")
+        print(f"Updated {destination.relative_to(ROOT).as_posix()}; review changes before committing.")
 
 
 if __name__ == "__main__":

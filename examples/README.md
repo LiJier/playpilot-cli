@@ -1,6 +1,6 @@
 # Reproducible inspection examples
 
-[Main README](../README.md) · [中文说明](../README_ZH.md)
+**English** · [简体中文](README_ZH.md) · [Main README](../README.md)
 
 ## Public APK: an old target SDK
 

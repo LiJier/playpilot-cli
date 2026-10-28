@@ -1,6 +1,6 @@
 # Inspect target SDK and AndroidManifest permissions before Google Play submission
 
-[README](../README.md) · [Recorded APK run](../examples/README.md) · [16 KB ELF guide](16kb-elf-alignment.md)
+**English** · [简体中文](target-sdk-manifest.zh.md) · [README](../README.md) · [Recorded APK run](../examples/README.md) · [16 KB ELF guide](16kb-elf-alignment.md)
 
 The source manifest and Gradle configuration describe the intended build. Inspect the actual APK or AAB to see what reached the release artifact after manifest merging and dependency packaging.
 

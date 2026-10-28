@@ -10,5 +10,13 @@
   "analyzer_revision": "f2f2c243800b7ff4ae66e655345746e1a7570bfb",
   "python_version": "3.13.7",
   "platform": "Windows",
-  "stdout_normalization": "LF line endings; trailing whitespace and trailing empty lines removed"
+  "stdout_normalization": "LF line endings; trailing whitespace and trailing empty lines removed",
+  "recorded_languages": [
+    "en",
+    "zh"
+  ],
+  "commands": {
+    "en": "python -X utf8 cli.py downloads/hello-world-581f7a325154.apk --lang en",
+    "zh": "python -X utf8 cli.py downloads/hello-world-581f7a325154.apk --lang zh"
+  }
 }

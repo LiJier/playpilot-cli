@@ -1,6 +1,6 @@
 # Use SDK detection to review Google Play Data Safety declarations
 
-[README](../README.md) · [Target SDK and manifest](target-sdk-manifest.md) · [Recorded example](../examples/README.md)
+**English** · [简体中文](sdk-data-safety-review.zh.md) · [README](../README.md) · [Target SDK and manifest](target-sdk-manifest.md) · [Recorded example](../examples/README.md)
 
 An SDK fingerprint is a reason to investigate data behavior. It does not prove that every SDK feature is enabled, which data leaves the device, or whether a transfer meets Google's definition of sharing.
 
