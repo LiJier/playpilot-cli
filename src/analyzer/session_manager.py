@@ -24,6 +24,28 @@ class SessionFileManager:
         self.ttl_seconds = ttl_seconds
         self._closed = {}
         self._uploads = {}
+        self._connections = {}
+
+    def connect_session(self, session_id: str) -> str:
+        """A live transport owns the package, independent of JS timer activity."""
+        sid = self.validate_session_id(session_id)
+        if sid in self._closed:
+            raise SessionClosedError("Session ended. Please upload the package again.")
+        token = uuid.uuid4().hex
+        self._connections.setdefault(sid, set()).add(token)
+        return token
+
+    def disconnect_session(self, session_id: str, token: str):
+        """Only the last connection closes the session; ignore stale handlers."""
+        connections = self._connections.get(session_id)
+        if not connections or token not in connections:
+            return
+        connections.remove(token)
+        if not connections:
+            self.delete_session_file(session_id)
+
+    def _is_active(self, session_id: str) -> bool:
+        return bool(self._connections.get(session_id)) or session_id in self._uploads
 
     @staticmethod
     def validate_session_id(session_id: str) -> str:
@@ -35,6 +57,9 @@ class SessionFileManager:
         now = time.time()
         for path in self.base_dir.iterdir():
             if path.is_file() and path.suffix in {".apk", ".aab", ".part"}:
+                sid = path.stem.rsplit("_", 1)[0] if path.suffix == ".part" else path.stem
+                if self._is_active(sid) and sid not in self._closed:
+                    continue
                 try:
                     if now - path.stat().st_mtime >= self.ttl_seconds:
                         path.unlink(missing_ok=True)
@@ -68,6 +93,7 @@ class SessionFileManager:
         """End the session and invalidate uploads before attempting file removal."""
         sid = self.validate_session_id(session_id)
         self._closed[sid] = time.time()
+        self._connections.pop(sid, None)
         return self._delete_files(sid)
 
     def is_closed(self, session_id: str) -> bool:
@@ -114,6 +140,9 @@ class SessionFileManager:
                     output.write(chunk)
             ensure_active()
             os.replace(partial, target)
+            # A slow upload starts its orphan TTL when it completes, not when
+            # its last chunk happened to be written.
+            os.utime(target, None)
             return target
         finally:
             partial.unlink(missing_ok=True)
@@ -126,11 +155,16 @@ class SessionFileManager:
             return None
         for ext in (".aab", ".apk"):
             path = self.base_dir / f"{sid}{ext}"
-            if path.is_file():
-                if time.time() - path.stat().st_mtime >= self.ttl_seconds:
+            try:
+                if not path.is_file():
+                    continue
+                if not self._is_active(sid) and time.time() - path.stat().st_mtime >= self.ttl_seconds:
                     self.delete_session_file(sid)
                     return None
                 return path
+            except FileNotFoundError:
+                # Explicit cleanup can race this lookup; report absence, not 500.
+                continue
         return None
 
 
