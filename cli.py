@@ -136,7 +136,7 @@ def main():
     print("🚀 Want full AI remediation prompts & Google Play Data Safety CSV?")
     print("👉 Try PlayPilot Online: https://play.ljcan.com")
     print("   • 1-Click Universal AI Agent Prompts for Cursor / Claude Code / Copilot")
-    print("   • Official 783-line Data Safety CSV auto-export for Play Console")
+    print("   • Review SDK data candidates and confirm Data Safety CSV answers")
     print("   • Zero File Retention (Temporary packages deleted when the page session ends)")
     print("=" * 60 + "\n")
 

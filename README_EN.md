@@ -24,7 +24,7 @@
 > ### 🌐 Instant Web Version (No Installation Needed)
 > If you prefer not to set up local Python or Java environments, use our free online web app directly:  
 > 👉 **[https://play.ljcan.com](https://play.ljcan.com)**  
-> *Upload your package to inspect · Uploaded packages deleted when the page session ends · Export Play Console Data Safety CSVs · Generate AI fix suggestions*
+> *Inspect your package · Uploaded packages deleted when the page session ends · Confirm actual data practices before exporting a Data Safety CSV · Generate AI fix suggestions*
 
 ---
 
@@ -33,7 +33,7 @@
 * ⚡ **Pure-Static & Fast Analysis**: Directly inspects APK and AAB binaries without requiring physical Android devices or emulators.
 * 🛡️ **Zero File Retention & Privacy**: All audits run 100% locally on your machine. Packages are never uploaded to any external server.
 * 📐 **16KB Page Alignment Inspection**: Statically parses 64-bit `.so` native libraries' ELF headers (`PT_LOAD` segment `p_align >= 0x4000`), preventing launch crashes on Android 15.
-* 📋 **Data Safety CSV Export**: Automatically maps 50+ popular third-party SDKs (e.g., AdMob, Firebase, Adjust, AppsFlyer) and exports official Google Play Console-compatible CSVs for instant batch import.
+* 📋 **Data Safety Review and Export (Web)**: SDK detection provides candidate data types only. Use the web form to confirm collection, sharing, purposes, encryption and deletion, then export a draft or reviewed CSV and verify it in Play Console.
 * 💡 **Actionable AI Fix Suggestions**: Produces structured code remediation prompts tailored for AI coding assistants (Cursor, Claude Code, GitHub Copilot, Windsurf) to fix manifest and code declarations.
 * 🎯 **Comprehensive Google Play Policy Coverage**:
   * Target SDK compliance (API 36 for ordinary new apps and updates)
@@ -47,6 +47,8 @@
 ---
 
 ## 🛠️ Quick Start
+
+The CLI command runs package inspections and has no interactive questionnaire or CSV export flags. This repository also includes the shared CSV generator and validation modules for programmatic use. Without confirmed answers, the generator produces a blank draft and never infers declaration facts from SDK matches.
 
 ### 1. Prerequisites
 - Python 3.10+

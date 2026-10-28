@@ -75,6 +75,19 @@ DATA_TYPES_I18N = {
     }
 }
 
+# Complete questionnaire coverage, including types outside SDK signatures.
+for _english, _chinese in {
+    "Race and ethnicity": "种族和族裔", "Political or religious beliefs": "政治或宗教信仰",
+    "Sexual orientation": "性取向", "Other info": "其他个人信息", "Credit score": "信用评分",
+    "Other financial info": "其他财务信息", "Web browsing history": "网页浏览记录",
+    "Emails": "电子邮件", "SMS or MMS": "短信或彩信", "Other in-app messages": "其他应用内消息",
+    "Photos": "照片", "Videos": "视频", "Music files": "音乐文件", "Other audio files": "其他音频文件",
+    "Health info": "健康信息", "Fitness info": "健身信息", "Contacts": "通讯录",
+    "Calendar events": "日历活动", "Other app performance data": "其他应用性能数据",
+    "Files and docs": "文件和文档", "Other actions": "其他应用活动",
+}.items():
+    DATA_TYPES_I18N[_english] = {"zh": f"{_chinese} ({_english})", "en": _english}
+
 PURPOSES_I18N = {
     "App functionality": {
         "zh": "应用功能 (App functionality)",

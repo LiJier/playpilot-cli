@@ -24,7 +24,7 @@
 > ### 🌐 在线免安装体验 (Web App)
 > 如果不想在本地配置 Python 或 Java 环境，可以直接使用网页版：  
 > 👉 **[https://play.ljcan.com](https://play.ljcan.com)**  
-> *上传安装包即可开始排查 · 网页会话结束删除上传包体 · 支持一键导出 Play Console 数据安全 CSV*
+> *上传安装包即可开始排查 · 网页会话结束删除上传包体 · 确认实际数据行为后导出 Data Safety CSV*
 
 ---
 
@@ -33,7 +33,7 @@
 * ⚡ **纯静态快速分析**：无需真机或模拟器运行环境，直接静态解析 AAB/APK 安装包特征。
 * 🛡️ **数据安全保障**：所有分析均在本地机器完成，绝不上传包体到任何第三方服务器。
 * 📐 **16KB 动态库页面对齐排查**：静态检查 64 位 `.so` 共享库 ELF Header，排查 Android 15 要求的 16KB Page Alignment，规避启动闪退风险。
-* 📋 **数据安全表单对照导出**：自动匹配常见第三方 SDK（如 AdMob、Firebase、Adjust 等），支持导出符合 Play Console 导入格式的 CSV 表格。
+* 📋 **Data Safety 复核与导出（Web）**：SDK 检测只提供候选数据。通过网页版逐项确认收集、共享、用途、加密和删除方式，再导出草稿或已确认 CSV，并在 Play Console 复核。
 * 💡 **代码修复建议**：针对不合规项生成修改建议，可直接复制给 Cursor、Claude Code 或 GitHub Copilot 等工具辅助修改。
 * 🎯 **全面覆盖常见 Google Play 政策审查项**：
   * Target SDK 适配要求（Android 14 / 15）
@@ -47,6 +47,8 @@
 ---
 
 ## 🛠️ 快速上手 (Quick Start)
+
+CLI 命令行入口执行安装包检查，没有交互问卷或 CSV 导出参数。仓库同步保留核心 CSV 生成器与校验模块供开发使用；未提供确认答案时仅生成留空草稿，不根据 SDK 自动填写申报事实。
 
 ### 1. 环境要求 (Prerequisites)
 - Python 3.10+
